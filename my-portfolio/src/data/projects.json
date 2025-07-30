@@ -1,0 +1,14 @@
+[
+  {
+    "slug": "chip-counter",
+    "title": "Poker Chip Counter",
+    "description": "Mobile app that recognizes poker chip values with AI.",
+    "image": "/placeholder.jpg",
+    "attachments": [
+      {
+        "name": "demo.pdf",
+        "url": "https://blob.vercel-storage.com/..."
+      }
+    ]
+  }
+]
