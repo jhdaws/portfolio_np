@@ -3,12 +3,19 @@ import path from "path";
 
 const dataFilePath = path.join(process.cwd(), "src/data/projects.json");
 
+export type Attachment = {
+  name: string;
+  url: string;
+  contentType: string;
+  pathname: string;
+};
+
 export type ProjectData = {
   slug: string;
   title: string;
   description: string;
   image?: string;
-  attachments?: string[];
+  attachments?: Attachment[];
 };
 
 export function getAllProjects(): ProjectData[] {
