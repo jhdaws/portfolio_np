@@ -1,5 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getAllProjects, saveProjects, type ProjectData } from "@/utils/projectData";
+import {
+  getAllProjects,
+  saveProjects,
+  type ProjectData,
+} from "@/utils/projectData";
 
 function createSlug(title: string, existing: Set<string>): string {
   const base = title
