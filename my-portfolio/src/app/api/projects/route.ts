@@ -1,10 +1,14 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getAllProjects, saveProjects, ProjectData } from "@/utils/projectData";
 
-export async function POST(request: NextRequest) {
-  try {
-    const { title, description, imageUrl, imagePath } = await request.json();
+export async function GET() {
+  const projects = getAllProjects();
+  return NextResponse.json(projects);
+}
 
+export async function POST(req: NextRequest) {
+  try {
+    const { title, description, imageUrl } = await req.json();
     if (!title || !description) {
       return NextResponse.json(
         { error: "Title and description are required" },
@@ -12,15 +16,12 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Generate a slug from the title
     const slug = title
       .toLowerCase()
       .replace(/[^a-z0-9]+/g, "-")
       .replace(/^-+|-+$/g, "");
 
     const projects = getAllProjects();
-
-    // Check if slug already exists
     if (projects.find((p) => p.slug === slug)) {
       return NextResponse.json(
         { error: "A project with this title already exists" },

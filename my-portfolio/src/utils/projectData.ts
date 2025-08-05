@@ -24,8 +24,3 @@ export function getAllProjects(): ProjectData[] {
 export function saveProjects(projects: ProjectData[]) {
   fs.writeFileSync(dataFilePath, JSON.stringify(projects, null, 2), "utf-8");
 }
-
-export function findProjectBySlug(slug: string): ProjectData | undefined {
-  const projects = getAllProjects();
-  return projects.find((p) => p.slug === slug);
-}

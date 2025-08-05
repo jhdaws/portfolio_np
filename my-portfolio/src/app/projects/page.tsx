@@ -1,20 +1,30 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import ProjectCard from "@/components/ProjectCard";
 import NewProjectModal from "@/components/NewProjectModal";
 import styles from "@/styles/pages/Projects.module.css";
 import { isAdmin } from "@/utils/auth";
-import { getAllProjects } from "@/utils/projectData";
+import type { ProjectData } from "@/utils/projectData";
 
 export default function ProjectsPage() {
-  const [projects, setProjects] = useState(getAllProjects());
+  const [projects, setProjects] = useState<ProjectData[]>([]);
   const [showModal, setShowModal] = useState(false);
   const admin = isAdmin();
 
+  const loadProjects = async () => {
+    const res = await fetch("/api/projects");
+    if (res.ok) {
+      setProjects(await res.json());
+    }
+  };
+
+  useEffect(() => {
+    loadProjects();
+  }, []);
+
   const handleAddProject = () => {
-    // Refresh projects list after adding
-    setProjects(getAllProjects());
+    loadProjects();
   };
 
   const handleCloseModal = () => {

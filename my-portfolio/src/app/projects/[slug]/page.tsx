@@ -1,15 +1,30 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
-import projects from "@/data/projects.json";
 import { isAdmin } from "@/utils/auth";
 import FileUploader from "@/components/FileUploader";
 import AttachmentRenderer from "@/components/AttachmentRenderer";
+import type { ProjectData } from "@/utils/projectData";
 
 export default function ProjectDetailPage() {
   const { slug } = useParams();
-  const project = projects.find((p) => p.slug === slug);
+  const [project, setProject] = useState<ProjectData | null>(null);
+  const [loading, setLoading] = useState(true);
 
+  useEffect(() => {
+    const load = async () => {
+      const res = await fetch("/api/projects");
+      if (res.ok) {
+        const projects = await res.json();
+        setProject(projects.find((p: ProjectData) => p.slug === slug) || null);
+      }
+      setLoading(false);
+    };
+    load();
+  }, [slug]);
+
+  if (loading) return <p>Loading...</p>;
   if (!project) return <p>Project not found.</p>;
 
   const admin = isAdmin();
