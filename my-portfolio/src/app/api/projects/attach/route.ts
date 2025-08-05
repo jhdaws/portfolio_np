@@ -1,17 +1,19 @@
 import { NextRequest, NextResponse } from "next/server";
 import path from "path";
 import { promises as fs } from "fs";
+import type { Attachment, ProjectData } from "@/utils/projectData";
 
 const PROJECTS_PATH = path.join(process.cwd(), "src", "data", "projects.json");
 
 export async function POST(req: NextRequest) {
-  const { projectSlug, file } = await req.json();
+  const { projectSlug, file }: { projectSlug: string; file: Attachment } =
+    await req.json();
 
   try {
     const fileData = await fs.readFile(PROJECTS_PATH, "utf-8");
-    const projects = JSON.parse(fileData);
+    const projects: ProjectData[] = JSON.parse(fileData);
 
-    const project = projects.find((p: any) => p.slug === projectSlug);
+    const project = projects.find((p) => p.slug === projectSlug);
     if (!project)
       return NextResponse.json({ error: "Project not found" }, { status: 404 });
 
