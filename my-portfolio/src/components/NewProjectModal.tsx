@@ -36,7 +36,7 @@ export default function NewProjectModal({ onClose, onAdd }: Props) {
       imagePath = blob.pathname;
     }
 
-    await fetch("/api/projects/add", {
+    await fetch("/api/projects", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ title, description, imageUrl, imagePath }),

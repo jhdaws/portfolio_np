@@ -1,6 +1,7 @@
 "use client";
 
 import LoginToggle from "@/components/LoginToggle";
+import Link from "next/link";
 
 export default function Header() {
   return (
@@ -13,12 +14,12 @@ export default function Header() {
     >
       <LoginToggle />
       <nav style={{ textAlign: "center" }}>
-        <a href="/" style={{ margin: "0 1rem" }}>
+        <Link href="/" style={{ margin: "0 1rem" }}>
           Home
-        </a>
-        <a href="/projects" style={{ margin: "0 1rem" }}>
+        </Link>
+        <Link href="/projects" style={{ margin: "0 1rem" }}>
           Projects
-        </a>
+        </Link>
       </nav>
     </header>
   );

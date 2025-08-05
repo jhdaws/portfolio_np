@@ -3,12 +3,19 @@ import path from "path";
 
 const dataFilePath = path.join(process.cwd(), "src/data/projects.json");
 
+export type Attachment = {
+  name: string;
+  url: string;
+  contentType: string;
+  pathname: string;
+};
+
 export type ProjectData = {
   slug: string;
   title: string;
   description: string;
   image?: string;
-  attachments?: string[];
+  attachments?: Attachment[];
 };
 
 export function getAllProjects(): ProjectData[] {
@@ -23,9 +30,4 @@ export function getAllProjects(): ProjectData[] {
 
 export function saveProjects(projects: ProjectData[]) {
   fs.writeFileSync(dataFilePath, JSON.stringify(projects, null, 2), "utf-8");
-}
-
-export function findProjectBySlug(slug: string): ProjectData | undefined {
-  const projects = getAllProjects();
-  return projects.find((p) => p.slug === slug);
 }
