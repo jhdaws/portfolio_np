@@ -2,25 +2,59 @@
 
 import Link from "next/link";
 import styles from "@/styles/components/ProjectCard.module.css";
+import { useRouter } from "next/navigation";
+import { isAdmin } from "@/utils/auth";
 
-type Props = {
-  slug: string;
+export type ProjectData = {
   title: string;
   description: string;
-  image: string;
+  slug: string;
+  image?: string;
 };
 
-export default function ProjectCard({
-  slug,
-  title,
-  description,
-  image,
-}: Props) {
+type Props = {
+  project: ProjectData;
+};
+
+export default function ProjectCard({ project }: Props) {
+  const router = useRouter();
+  const admin = isAdmin();
+
+  const handleDelete = async () => {
+    const confirmed = confirm(`Delete project "${project.title}"?`);
+    if (!confirmed) return;
+
+    const res = await fetch("/api/projects/delete", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ slug: project.slug }),
+    });
+
+    if (res.ok) {
+      router.refresh();
+    } else {
+      alert("Failed to delete project");
+    }
+  };
+
   return (
-    <Link href={`/projects/${slug}`} className={styles.card}>
-      <img src={image} alt={title} className={styles.image} />
-      <h3>{title}</h3>
-      <p>{description}</p>
-    </Link>
+    <div className={styles.card}>
+      <Link href={`/projects/${project.slug}`} className={styles.link}>
+        {project.image && (
+          <img
+            src={project.image}
+            alt={project.title}
+            className={styles.image}
+          />
+        )}
+        <h3>{project.title}</h3>
+        <p>{project.description}</p>
+      </Link>
+      {admin && (
+        <button onClick={handleDelete} className={styles.deleteButton}>
+          🗑 Delete
+        </button>
+      )}
+    </div>
   );
 }

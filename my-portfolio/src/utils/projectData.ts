@@ -1,0 +1,31 @@
+import fs from "fs";
+import path from "path";
+
+const dataFilePath = path.join(process.cwd(), "src/data/projects.json");
+
+export type ProjectData = {
+  slug: string;
+  title: string;
+  description: string;
+  image?: string;
+  attachments?: string[];
+};
+
+export function getAllProjects(): ProjectData[] {
+  try {
+    const fileContents = fs.readFileSync(dataFilePath, "utf-8");
+    return JSON.parse(fileContents) as ProjectData[];
+  } catch (err) {
+    console.error("Failed to read projects.json:", err);
+    return [];
+  }
+}
+
+export function saveProjects(projects: ProjectData[]) {
+  fs.writeFileSync(dataFilePath, JSON.stringify(projects, null, 2), "utf-8");
+}
+
+export function findProjectBySlug(slug: string): ProjectData | undefined {
+  const projects = getAllProjects();
+  return projects.find((p) => p.slug === slug);
+}

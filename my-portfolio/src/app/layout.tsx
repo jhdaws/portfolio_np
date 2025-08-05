@@ -1,4 +1,5 @@
 import "../styles/globals.css";
+import Header from "@/components/Header";
 
 export const metadata = {
   title: "My Friend’s Portfolio",
@@ -13,17 +14,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body>
-        <header style={{ padding: "1rem", borderBottom: "1px solid #ccc" }}>
-          <span style={{ float: "right" }}>🔐 Login</span>
-          <nav style={{ textAlign: "center" }}>
-            <a href="/" style={{ margin: "0 1rem" }}>
-              Home
-            </a>
-            <a href="/projects" style={{ margin: "0 1rem" }}>
-              Projects
-            </a>
-          </nav>
-        </header>
+        <Header />
         <main style={{ padding: "2rem" }}>{children}</main>
       </body>
     </html>

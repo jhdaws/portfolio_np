@@ -4,6 +4,7 @@ import { useParams } from "next/navigation";
 import projects from "@/data/projects.json";
 import { isAdmin } from "@/utils/auth";
 import FileUploader from "@/components/FileUploader";
+import AttachmentRenderer from "@/components/AttachmentRenderer";
 
 export default function ProjectDetailPage() {
   const { slug } = useParams();
@@ -26,6 +27,11 @@ export default function ProjectDetailPage() {
       <p>{project.description}</p>
 
       <hr style={{ margin: "2rem 0" }} />
+
+      <AttachmentRenderer
+        attachments={project.attachments || []}
+        projectSlug={project.slug}
+      />
 
       {admin ? (
         <div>

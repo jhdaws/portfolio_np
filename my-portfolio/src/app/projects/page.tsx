@@ -2,51 +2,43 @@
 
 import { useState } from "react";
 import ProjectCard from "@/components/ProjectCard";
-import ProjectForm from "@/components/ProjectForm";
+import NewProjectModal from "@/components/NewProjectModal";
+import styles from "@/styles/pages/Projects.module.css";
 import { isAdmin } from "@/utils/auth";
-import initialProjects from "@/data/projects.json";
+import { getAllProjects } from "@/utils/projectData";
 
 export default function ProjectsPage() {
+  const [projects, setProjects] = useState(getAllProjects());
+  const [showModal, setShowModal] = useState(false);
   const admin = isAdmin();
-  const [projects, setProjects] = useState(initialProjects);
-  const [showForm, setShowForm] = useState(false);
 
-  const handleAddProject = (newProject: any) => {
-    const slug = newProject.title.toLowerCase().replace(/\s+/g, "-");
-    setProjects([...projects, { ...newProject, slug }]);
-    setShowForm(false);
+  const handleAddProject = () => {
+    // Refresh projects list after adding
+    setProjects(getAllProjects());
+  };
+
+  const handleCloseModal = () => {
+    setShowModal(false);
   };
 
   return (
-    <div>
-      <h1>Projects</h1>
+    <div className={styles.container}>
       {admin && (
         <>
-          {!showForm && (
-            <button
-              onClick={() => setShowForm(true)}
-              style={{ marginBottom: "1rem" }}
-            >
-              ➕ Add New Project
-            </button>
-          )}
-          {showForm && (
-            <ProjectForm
-              onSubmit={handleAddProject}
-              onCancel={() => setShowForm(false)}
+          <button onClick={() => setShowModal(true)}>Add New Project</button>
+          {showModal && (
+            <NewProjectModal
+              onClose={handleCloseModal}
+              onAdd={handleAddProject}
             />
           )}
         </>
       )}
-      {projects.map((project) => (
-        <ProjectCard
-          key={project.slug}
-          slug={project.slug}
-          title={project.title}
-          description={project.description}
-          image={project.image}
-        />
-      ))}
+      <div className={styles.grid}>
+        {projects.map((p) => (
+          <ProjectCard key={p.slug} project={p} />
+        ))}
+      </div>
     </div>
   );
 }

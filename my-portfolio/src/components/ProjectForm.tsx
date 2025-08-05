@@ -1,53 +1,57 @@
 "use client";
 
-import { useState, useRef } from "react";
+import { useState } from "react";
 import styles from "@/styles/components/ProjectForm.module.css";
+import { useRouter } from "next/navigation";
+import projects from "@/data/projects.json";
 
 type Project = {
   title: string;
   description: string;
   image?: string;
+  slug: string;
+  attachments?: { name: string; url: string }[];
 };
 
 type Props = {
-  onSubmit: (project: Project) => void;
+  onSubmit: (newProject: any) => void;
   onCancel: () => void;
 };
 
-export default function ProjectForm({ onSubmit, onCancel }: Props) {
+export default function ProjectForm({ onCancel }: Props) {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
-  const [imagePreview, setImagePreview] = useState<string | null>(null);
-  const imageFileRef = useRef<File | null>(null);
+  const [image, setImage] = useState("");
+  const router = useRouter();
 
-  const handleImageDrop = (e: React.DragEvent) => {
-    e.preventDefault();
-    const file = e.dataTransfer.files[0];
-    if (file && file.type.startsWith("image/")) {
-      const url = URL.createObjectURL(file);
-      setImagePreview(url);
-      imageFileRef.current = file;
-    }
-  };
-
-  const handleDragOver = (e: React.DragEvent) => {
-    e.preventDefault();
-  };
-
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     const slug = title.toLowerCase().replace(/\s+/g, "-");
 
-    onSubmit({
+    const newProject: Project = {
       title,
       description,
-      image: imagePreview ?? undefined,
+      image,
+      slug,
+      attachments: [],
+    };
+
+    const updatedProjects = [...projects, newProject];
+
+    const res = await fetch("/api/projects/save", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(updatedProjects),
     });
 
-    setTitle("");
-    setDescription("");
-    setImagePreview(null);
-    imageFileRef.current = null;
+    if (res.ok) {
+      setTitle("");
+      setDescription("");
+      setImage("");
+      router.refresh();
+    } else {
+      alert("Failed to save new project");
+    }
   };
 
   return (
@@ -72,16 +76,10 @@ export default function ProjectForm({ onSubmit, onCancel }: Props) {
         />
       </div>
 
-      <div
-        onDrop={handleImageDrop}
-        onDragOver={handleDragOver}
-        className={styles.dropZone}
-      >
-        {imagePreview ? (
-          <img src={imagePreview} alt="Preview" className={styles.preview} />
-        ) : (
-          <p>Drag & drop an image here (optional)</p>
-        )}
+      <div>
+        <label>Image URL or Path:</label>
+        <br />
+        <input value={image} onChange={(e) => setImage(e.target.value)} />
       </div>
 
       <div className={styles.actions}>
