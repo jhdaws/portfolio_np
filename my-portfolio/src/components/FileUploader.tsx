@@ -6,10 +6,10 @@ import { isAdmin } from "@/utils/auth";
 
 interface Props {
   projectSlug: string;
-  onChange: () => void | Promise<void>;
+  onChange?: () => void | Promise<void>;
 }
 
-export default function FileUploader({ projectSlug }: Props) {
+export default function FileUploader({ projectSlug, onChange }: Props) {
   const [isDragging, setIsDragging] = useState(false);
   const [uploading, setUploading] = useState(false);
 
@@ -55,6 +55,10 @@ export default function FileUploader({ projectSlug }: Props) {
     }
 
     setUploading(false);
+
+    if (onChange) {
+      await onChange();
+    }
   };
 
   return isAdmin() ? (
