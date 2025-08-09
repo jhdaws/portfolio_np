@@ -1,10 +1,12 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getAllProjects, saveProjects } from "@/utils/projectData";
 
-export async function POST(req: NextRequest) {
-  const { slug } = await req.json();
+export async function DELETE(
+  _req: NextRequest,
+  { params }: { params: { slug: string } }
+) {
   const projects = getAllProjects();
-  const updated = projects.filter((p) => p.slug !== slug);
-  saveProjects(updated);
+  const filtered = projects.filter((p) => p.slug !== params.slug);
+  saveProjects(filtered);
   return NextResponse.json({ status: "deleted" });
 }
