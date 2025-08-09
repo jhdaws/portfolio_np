@@ -2,7 +2,6 @@
 
 import Link from "next/link";
 import styles from "@/styles/components/ProjectCard.module.css";
-import { useRouter } from "next/navigation";
 import { isAdmin } from "@/utils/auth";
 
 export type ProjectData = {
@@ -14,10 +13,10 @@ export type ProjectData = {
 
 type Props = {
   project: ProjectData;
+  onDelete?: (slug: string) => void;
 };
 
-export default function ProjectCard({ project }: Props) {
-  const router = useRouter();
+export default function ProjectCard({ project, onDelete }: Props) {
   const admin = isAdmin();
 
   const handleDelete = async () => {
@@ -31,7 +30,7 @@ export default function ProjectCard({ project }: Props) {
     });
 
     if (res.ok) {
-      router.refresh();
+      onDelete?.(project.slug);
     } else {
       alert("Failed to delete project");
     }

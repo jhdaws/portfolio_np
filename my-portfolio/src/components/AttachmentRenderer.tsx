@@ -1,18 +1,12 @@
 "use client";
 
 import { isAdmin } from "@/utils/auth";
-
-interface Attachment {
-  name: string;
-  url: string;
-  contentType: string;
-  pathname: string;
-}
+import type { Attachment } from "@/utils/projectData";
 
 interface Props {
   attachments: Attachment[];
   projectSlug: string;
-  onDelete?: () => void;
+  onDelete?: (pathname: string) => void;
 }
 
 export default function AttachmentRenderer({
@@ -29,8 +23,8 @@ export default function AttachmentRenderer({
       body: JSON.stringify({ projectSlug, pathname }),
     });
 
-    if (res.ok && onDelete) {
-      onDelete();
+    if (res.ok) {
+      onDelete?.(pathname);
     }
   };
 
@@ -38,8 +32,8 @@ export default function AttachmentRenderer({
     <section>
       <h3>Attachments</h3>
       <ul style={{ listStyle: "none", paddingLeft: 0 }}>
-        {attachments.map((file, i) => (
-          <li key={i} style={{ marginBottom: "1rem" }}>
+        {attachments.map((file) => (
+          <li key={file.pathname} style={{ marginBottom: "1rem" }}>
             <div
               style={{
                 display: "flex",

@@ -5,7 +5,7 @@ import { useParams } from "next/navigation";
 import { isAdmin } from "@/utils/auth";
 import FileUploader from "@/components/FileUploader";
 import AttachmentRenderer from "@/components/AttachmentRenderer";
-import type { ProjectData } from "@/utils/projectData";
+import type { ProjectData, Attachment } from "@/utils/projectData";
 
 export default function ProjectDetailPage() {
   const { slug } = useParams();
@@ -29,6 +29,22 @@ export default function ProjectDetailPage() {
 
   const admin = isAdmin();
 
+  const handleAttachmentAdded = (file: Attachment) => {
+    setProject((prev) =>
+      prev ? { ...prev, attachments: [...(prev.attachments || []), file] } : prev
+    );
+  };
+
+  const handleAttachmentDeleted = (pathname: string) => {
+    setProject((prev) => {
+      if (!prev) return prev;
+      return {
+        ...prev,
+        attachments: prev.attachments?.filter((a) => a.pathname !== pathname),
+      };
+    });
+  };
+
   return (
     <div>
       <h1>{project.title}</h1>
@@ -46,12 +62,13 @@ export default function ProjectDetailPage() {
       <AttachmentRenderer
         attachments={project.attachments || []}
         projectSlug={project.slug}
+        onDelete={handleAttachmentDeleted}
       />
 
       {admin ? (
         <div>
           <h2>Admin Attachments</h2>
-          <FileUploader projectSlug={project.slug} />
+          <FileUploader projectSlug={project.slug} onUpload={handleAttachmentAdded} />
         </div>
       ) : (
         <p>

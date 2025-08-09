@@ -31,6 +31,10 @@ export default function ProjectsClient() {
     setShowModal(false);
   };
 
+  const handleDeleteProject = (slug: string) => {
+    setProjects((prev) => prev.filter((p) => p.slug !== slug));
+  };
+
   return (
     <div className={styles.container}>
       <h1 className={styles.title}>Projects</h1>
@@ -47,7 +51,7 @@ export default function ProjectsClient() {
       )}
       <div className={styles.grid}>
         {projects.map((p) => (
-          <ProjectCard key={p.slug} project={p} />
+          <ProjectCard key={p.slug} project={p} onDelete={handleDeleteProject} />
         ))}
       </div>
     </div>

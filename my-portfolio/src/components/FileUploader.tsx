@@ -3,12 +3,14 @@
 import { useState } from "react";
 import styles from "@/styles/components/FileUploader.module.css";
 import { isAdmin } from "@/utils/auth";
+import type { Attachment } from "@/utils/projectData";
 
 interface Props {
   projectSlug: string;
+  onUpload?: (file: Attachment) => void;
 }
 
-export default function FileUploader({ projectSlug }: Props) {
+export default function FileUploader({ projectSlug, onUpload }: Props) {
   const [isDragging, setIsDragging] = useState(false);
   const [uploading, setUploading] = useState(false);
 
@@ -50,6 +52,8 @@ export default function FileUploader({ projectSlug }: Props) {
             file: { url, contentType, name: file.name, pathname },
           }),
         });
+
+        onUpload?.({ url, contentType, name: file.name, pathname });
       }
     }
 
