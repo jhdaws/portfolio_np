@@ -12,13 +12,13 @@ interface Attachment {
 interface Props {
   attachments: Attachment[];
   projectSlug: string;
-  onDelete?: () => void;
+  onChange?: () => void;
 }
 
 export default function AttachmentRenderer({
   attachments,
   projectSlug,
-  onDelete,
+  onChange,
 }: Props) {
   if (!attachments || attachments.length === 0) return null;
 
@@ -29,10 +29,24 @@ export default function AttachmentRenderer({
       body: JSON.stringify({ projectSlug, pathname }),
     });
 
-    if (res.ok && onDelete) {
-      onDelete();
+    if (res.ok && onChange) {
+      onChange();
     }
   };
+
+  const moveAttachment = async (fromIndex: number, toIndex: number) => {
+    const res = await fetch("/api/projects/reorderAttachment", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ projectSlug, fromIndex, toIndex }),
+    });
+
+    if (res.ok && onChange) {
+      onChange();
+    }
+  };
+
+  const admin = isAdmin();
 
   return (
     <section>
@@ -43,50 +57,33 @@ export default function AttachmentRenderer({
             <div
               style={{
                 display: "flex",
-                justifyContent: "space-between",
                 alignItems: "center",
+                justifyContent: "space-between",
               }}
             >
-              <strong>{file.name}</strong>
-              {isAdmin() && (
-                <button
-                  onClick={() => handleDelete(file.pathname)}
-                  style={{ marginLeft: "1rem" }}
-                >
-                  🗑 Delete
-                </button>
-              )}
-            </div>
-            <div style={{ marginTop: "0.5rem" }}>
-              {file.contentType.startsWith("image/") && (
-                <img
-                  src={file.url}
-                  alt={file.name}
-                  style={{ maxWidth: "100%" }}
-                />
-              )}
-              {file.contentType.startsWith("video/") && (
-                <video src={file.url} controls style={{ maxWidth: "100%" }} />
-              )}
-              {file.contentType === "application/pdf" && (
-                <iframe
-                  src={file.url}
-                  style={{ width: "100%", height: "400px" }}
-                  title={file.name}
-                />
-              )}
-              {!file.contentType.startsWith("image/") &&
-                !file.contentType.startsWith("video/") &&
-                file.contentType !== "application/pdf" && (
-                  <a
-                    href={file.url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    download
+              <a href={file.url} target="_blank" rel="noopener noreferrer">
+                {file.name}
+              </a>
+
+              {admin && (
+                <div style={{ display: "flex", gap: "0.5rem" }}>
+                  <button onClick={() => handleDelete(file.pathname)}>
+                    Delete
+                  </button>
+                  <button
+                    disabled={i === 0}
+                    onClick={() => moveAttachment(i, i - 1)}
                   >
-                    Download
-                  </a>
-                )}
+                    ↑
+                  </button>
+                  <button
+                    disabled={i === attachments.length - 1}
+                    onClick={() => moveAttachment(i, i + 1)}
+                  >
+                    ↓
+                  </button>
+                </div>
+              )}
             </div>
           </li>
         ))}

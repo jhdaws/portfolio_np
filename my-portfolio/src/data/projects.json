@@ -7,24 +7,10 @@
     "attachments": []
   },
   {
-    "title": "test2",
-    "description": "test",
+    "title": "safka",
+    "description": "faaa",
     "image": "",
-    "slug": "test2",
+    "slug": "safka",
     "attachments": []
-  },
-  {
-    "title": "test4",
-    "description": "ajhakfa",
-    "image": "",
-    "slug": "test4",
-    "attachments": [
-      {
-        "url": "https://p6hkghv9qet3ul1y.public.blob.vercel-storage.com/COVER%20LETTER%20Deloitte.pdf",
-        "contentType": "application/pdf",
-        "name": "COVER LETTER Deloitte.pdf",
-        "pathname": "COVER LETTER Deloitte.pdf"
-      }
-    ]
   }
 ]

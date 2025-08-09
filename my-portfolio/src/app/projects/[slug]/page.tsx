@@ -12,15 +12,16 @@ export default function ProjectDetailPage() {
   const [project, setProject] = useState<ProjectData | null>(null);
   const [loading, setLoading] = useState(true);
 
+  const load = async () => {
+    const res = await fetch("/api/projects");
+    if (res.ok) {
+      const projects = await res.json();
+      setProject(projects.find((p: ProjectData) => p.slug === slug) || null);
+    }
+    setLoading(false);
+  };
+
   useEffect(() => {
-    const load = async () => {
-      const res = await fetch("/api/projects");
-      if (res.ok) {
-        const projects = await res.json();
-        setProject(projects.find((p: ProjectData) => p.slug === slug) || null);
-      }
-      setLoading(false);
-    };
     load();
   }, [slug]);
 
@@ -46,12 +47,13 @@ export default function ProjectDetailPage() {
       <AttachmentRenderer
         attachments={project.attachments || []}
         projectSlug={project.slug}
+        onChange={load}
       />
 
       {admin ? (
         <div>
           <h2>Admin Attachments</h2>
-          <FileUploader projectSlug={project.slug} />
+          <FileUploader projectSlug={project.slug} onChange={load} />
         </div>
       ) : (
         <p>

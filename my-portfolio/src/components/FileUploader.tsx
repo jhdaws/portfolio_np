@@ -6,6 +6,7 @@ import { isAdmin } from "@/utils/auth";
 
 interface Props {
   projectSlug: string;
+  onChange: () => void | Promise<void>;
 }
 
 export default function FileUploader({ projectSlug }: Props) {
