@@ -7,9 +7,14 @@ import { isAdmin } from "@/utils/auth";
 interface Props {
   projectSlug: string;
   onChange?: () => void | Promise<void>;
+  type?: "projects" | "books" | "tracks";
 }
 
-export default function FileUploader({ projectSlug, onChange }: Props) {
+export default function FileUploader({
+  projectSlug,
+  onChange,
+  type = "projects",
+}: Props) {
   const [isDragging, setIsDragging] = useState(false);
   const [uploading, setUploading] = useState(false);
 
@@ -42,8 +47,8 @@ export default function FileUploader({ projectSlug, onChange }: Props) {
       if (res.ok) {
         const { url, contentType, pathname } = await res.json();
 
-        // Save reference to project JSON
-        await fetch(`/api/projects/attach`, {
+        // Save reference to JSON for the given type
+        await fetch(`/api/${type}/attach`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
