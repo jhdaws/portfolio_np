@@ -1,0 +1,62 @@
+.container {
+  max-width: 700px;
+  margin: 0 auto;
+  padding: 2rem;
+}
+
+.title {
+  font-size: 2rem;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+}
+
+.subtitle {
+  color: #666;
+  margin-bottom: 2rem;
+}
+
+.list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: grid;
+  gap: 1.25rem;
+}
+
+.item {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  padding: 1rem;
+  background-color: white;
+  transition: transform 0.15s ease;
+}
+
+.item:hover {
+  transform: translateY(-2px);
+}
+
+.icon {
+  flex-shrink: 0;
+  color: #0077b5; /* default color; overridden per item if you want */
+}
+
+.info {
+  display: flex;
+  flex-direction: column;
+}
+
+.label {
+  font-weight: 600;
+}
+
+.link {
+  color: #2563eb;
+  text-decoration: none;
+}
+
+.link:hover {
+  text-decoration: underline;
+}

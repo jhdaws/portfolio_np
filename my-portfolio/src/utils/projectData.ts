@@ -15,6 +15,7 @@ export type ProjectData = {
   title: string;
   description: string;
   image?: string;
+  imagePathname?: string;
   attachments?: Attachment[];
 };
 

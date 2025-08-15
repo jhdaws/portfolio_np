@@ -20,6 +20,9 @@ export default function Header() {
         <Link href="/projects" style={{ margin: "0 1rem" }}>
           Projects
         </Link>
+        <Link href="/contact" style={{ margin: "0 1rem" }}>
+          Contact
+        </Link>
       </nav>
     </header>
   );
