@@ -15,12 +15,14 @@ interface Props {
   attachments: Attachment[];
   projectSlug: string;
   onChange?: () => void;
+  type?: "projects" | "books" | "tracks";
 }
 
 export default function AttachmentRenderer({
   attachments,
   projectSlug,
   onChange,
+  type = "projects",
 }: Props) {
   const admin = isAdmin();
   const router = useRouter();
@@ -46,7 +48,7 @@ export default function AttachmentRenderer({
   const handleDelete = async (pathname: string) => {
     const prev = items;
     setItems(items.filter((a) => a.pathname !== pathname)); // optimistic
-    const res = await fetch("/api/projects/deleteAttachment", {
+    const res = await fetch(`/api/${type}/deleteAttachment`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ projectSlug, pathname }),
@@ -58,7 +60,7 @@ export default function AttachmentRenderer({
   const moveAttachment = async (fromIndex: number, toIndex: number) => {
     const prev = items;
     setItems(reorder(items, fromIndex, toIndex)); // optimistic
-    const res = await fetch("/api/projects/reorderAttachment", {
+    const res = await fetch(`/api/${type}/reorderAttachment`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ projectSlug, fromIndex, toIndex }),

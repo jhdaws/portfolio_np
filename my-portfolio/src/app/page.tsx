@@ -91,8 +91,9 @@ export default function HomePage() {
       }
 
       await load();
-    } catch (err: any) {
-      alert(err?.message || "Failed to change image");
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : String(err);
+      alert(msg || "Failed to change image");
     } finally {
       setBusy(false);
       if (fileInputRef.current) fileInputRef.current.value = "";
@@ -111,8 +112,9 @@ export default function HomePage() {
         throw new Error(err?.error || "Failed to remove image");
       }
       await load();
-    } catch (err: any) {
-      alert(err?.message || "Failed to remove image");
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : String(err);
+      alert(msg || "Failed to remove image");
     } finally {
       setBusy(false);
     }

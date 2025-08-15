@@ -5,16 +5,16 @@ import { useParams } from "next/navigation";
 import { isAdmin } from "@/utils/auth";
 import FileUploader from "@/components/FileUploader";
 import AttachmentRenderer from "@/components/AttachmentRenderer";
-import type { ProjectData } from "@/utils/projectData";
+import type { BookData } from "@/utils/bookData";
 
-export default function ProjectDetailPage() {
+export default function BookDetailPage() {
   const params = useParams();
   const slug =
     typeof params.slug === "string"
       ? params.slug
       : (params.slug as string[])[0];
 
-  const [project, setProject] = useState<ProjectData | null>(null);
+  const [book, setBook] = useState<BookData | null>(null);
   const [loading, setLoading] = useState(true);
   const [imgBusy, setImgBusy] = useState(false);
   const fileInputRef = useRef<HTMLInputElement | null>(null);
@@ -23,12 +23,12 @@ export default function ProjectDetailPage() {
 
   const load = async () => {
     setLoading(true);
-    const res = await fetch("/api/projects", { cache: "no-store" });
+    const res = await fetch("/api/books", { cache: "no-store" });
     if (res.ok) {
-      const projects: ProjectData[] = await res.json();
-      setProject(projects.find((p) => p.slug === slug) || null);
+      const books: BookData[] = await res.json();
+      setBook(books.find((b) => b.slug === slug) || null);
     } else {
-      setProject(null);
+      setBook(null);
     }
     setLoading(false);
   };
@@ -41,12 +41,10 @@ export default function ProjectDetailPage() {
 
   const handleFileSelected = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
-    if (!file || !project) return;
+    if (!file || !book) return;
 
     try {
       setImgBusy(true);
-
-      // 1) Upload to blob (returns { name, url, pathname, contentType, size })
       const fd = new FormData();
       fd.append("file", file);
       fd.append("filename", file.name);
@@ -57,8 +55,7 @@ export default function ProjectDetailPage() {
       }
       const uploaded = await upRes.json();
 
-      // 2) Tell server to swap the cover image and delete old blob
-      const patchRes = await fetch(`/api/projects/${project.slug}/image`, {
+      const patchRes = await fetch(`/api/books/${book.slug}/image`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -68,7 +65,7 @@ export default function ProjectDetailPage() {
       });
       if (!patchRes.ok) {
         const err = await patchRes.json().catch(() => ({}));
-        throw new Error(err?.error || "Failed to update project image");
+        throw new Error(err?.error || "Failed to update book image");
       }
 
       await load();
@@ -82,13 +79,13 @@ export default function ProjectDetailPage() {
   };
 
   const handleRemoveImage = async () => {
-    if (!project) return;
-    const confirmed = confirm("Remove the project image?");
+    if (!book) return;
+    const confirmed = confirm("Remove the book image?");
     if (!confirmed) return;
 
     try {
       setImgBusy(true);
-      const delRes = await fetch(`/api/projects/${project.slug}/image`, {
+      const delRes = await fetch(`/api/books/${book.slug}/image`, {
         method: "DELETE",
       });
       if (!delRes.ok) {
@@ -105,16 +102,21 @@ export default function ProjectDetailPage() {
   };
 
   if (loading) return <p>Loading...</p>;
-  if (!project) return <p>Project not found.</p>;
+  if (!book) return <p>Book not found.</p>;
 
   return (
     <div>
-      <h1>{project.title}</h1>
+      <h1>{book.title}</h1>
+      <p>
+        <strong>{book.author}</strong>
+        {book.year && ` (${book.year})`}
+      </p>
+      {book.genre && <p>Genre: {book.genre}</p>}
 
-      {project.image && (
+      {book.image && (
         <img
-          src={project.image}
-          alt={project.title}
+          src={book.image}
+          alt={book.title}
           style={{ maxWidth: "100%", maxHeight: "400px", borderRadius: "8px" }}
         />
       )}
@@ -136,9 +138,9 @@ export default function ProjectDetailPage() {
             onChange={handleFileSelected}
           />
           <button onClick={handleClickChangeImage} disabled={imgBusy}>
-            {project.image ? "Change Image" : "Add Image"}
+            {book.image ? "Change Image" : "Add Image"}
           </button>
-          {project.image && (
+          {book.image && (
             <button onClick={handleRemoveImage} disabled={imgBusy}>
               Remove Image
             </button>
@@ -149,20 +151,25 @@ export default function ProjectDetailPage() {
         </div>
       )}
 
-      <p>{project.description}</p>
+      <p>{book.description}</p>
 
       <hr style={{ margin: "2rem 0" }} />
 
       <AttachmentRenderer
-        attachments={project.attachments || []}
-        projectSlug={project.slug}
+        attachments={book.attachments || []}
+        projectSlug={book.slug}
         onChange={load}
+        type="books"
       />
 
       {admin ? (
         <div>
           <h2>Admin Attachments</h2>
-          <FileUploader projectSlug={project.slug} onChange={load} />
+          <FileUploader
+            projectSlug={book.slug}
+            onChange={load}
+            type="books"
+          />
         </div>
       ) : (
         <p>
