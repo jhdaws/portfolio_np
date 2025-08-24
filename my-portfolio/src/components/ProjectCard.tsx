@@ -48,9 +48,9 @@ export default function ProjectCard({ project, onDelete }: Props) {
         <p>{project.description}</p>
       </Link>
       {admin && (
-        <button onClick={handleDelete} className={styles.deleteButton}>
-          🗑 Delete
-        </button>
+        <div className={styles.buttonRow}>
+          <button onClick={handleDelete}>🗑 Delete</button>
+        </div>
       )}
     </div>
   );

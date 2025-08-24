@@ -24,7 +24,7 @@
 .image {
   display: block;
   width: 100%;
-  max-height: 200px;
+  height: 200px;
   object-fit: cover;
   border-radius: 4px;
   margin-bottom: 0.5rem;
@@ -36,6 +36,9 @@
   text-decoration: none;
 }
 
-.deleteButton {
+.buttonRow {
+  display: flex;
+  justify-content: center;
+  gap: 0.5rem;
   margin-top: 0.5rem;
 }

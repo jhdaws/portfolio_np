@@ -1,11 +1,11 @@
-/* Global dark theme */
+/* Global dark theme inspired by the Nord palette */
 :root {
-  --bg-color: #0d1117;
-  --text-color: #e6edf3;
-  --accent-color: #c084fc;
-  --muted-color: #999;
-  --card-bg: #161b22;
-  --card-border: #30363d;
+  --bg-color: #2e3440;
+  --text-color: #eceff4;
+  --accent-color: #81a1c1;
+  --muted-color: #4c566a;
+  --card-bg: #3b4252;
+  --card-border: #81a1c1;
 }
 
 * {
@@ -28,7 +28,8 @@ h3,
 h4,
 h5,
 h6 {
-  font-family: var(--font-heading), serif;
+  font-family: var(--font-heading), sans-serif;
+  font-weight: 700;
 }
 
 a {
@@ -51,7 +52,7 @@ button {
 }
 
 button:hover:not(:disabled) {
-  background: #a855f7;
+  background: #5e81ac;
 }
 
 button:disabled {

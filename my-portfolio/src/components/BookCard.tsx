@@ -41,9 +41,9 @@ export default function BookCard({ book, onDelete }: Props) {
         <p>{book.description}</p>
       </Link>
       {admin && (
-        <button onClick={handleDelete} className={styles.deleteButton}>
-          🗑 Delete
-        </button>
+        <div className={styles.buttonRow}>
+          <button onClick={handleDelete}>🗑 Delete</button>
+        </div>
       )}
     </div>
   );

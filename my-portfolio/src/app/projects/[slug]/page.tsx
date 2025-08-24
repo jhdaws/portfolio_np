@@ -7,6 +7,7 @@ import FileUploader from "@/components/FileUploader";
 import AttachmentRenderer from "@/components/AttachmentRenderer";
 import type { ProjectData } from "@/utils/projectData";
 import styles from "@/styles/pages/DetailPage.module.css";
+import EditableText from "@/components/EditableText";
 
 export default function ProjectDetailPage() {
   const params = useParams();
@@ -21,6 +22,30 @@ export default function ProjectDetailPage() {
   const fileInputRef = useRef<HTMLInputElement | null>(null);
 
   const admin = isAdmin();
+
+  const saveTitle = async (newTitle: string) => {
+    if (!project) return;
+    const prev = project;
+    setProject({ ...project, title: newTitle });
+    const res = await fetch(`/api/projects/${project.slug}`, {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ title: newTitle }),
+    });
+    if (!res.ok) setProject(prev);
+  };
+
+  const saveDescription = async (newDesc: string) => {
+    if (!project) return;
+    const prev = project;
+    setProject({ ...project, description: newDesc });
+    const res = await fetch(`/api/projects/${project.slug}`, {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ description: newDesc }),
+    });
+    if (!res.ok) setProject(prev);
+  };
 
   const load = async () => {
     setLoading(true);
@@ -110,7 +135,12 @@ export default function ProjectDetailPage() {
 
   return (
     <div>
-      <h1>{project.title}</h1>
+      <EditableText
+        text={project.title}
+        onSave={saveTitle}
+        isAdmin={admin}
+        tag="h1"
+      />
 
       {project.image && (
         <img
@@ -141,7 +171,12 @@ export default function ProjectDetailPage() {
         </div>
       )}
 
-      <p>{project.description}</p>
+      <EditableText
+        text={project.description}
+        onSave={saveDescription}
+        isAdmin={admin}
+        tag="p"
+      />
 
       <hr className={styles.divider} />
 

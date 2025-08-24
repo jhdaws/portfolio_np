@@ -90,7 +90,11 @@ export default function MusicClient() {
         )}
         <div className={pageStyles.grid}>
           {tracks.map((t) => (
-            <TrackCard key={t.slug} track={t} onDelete={handleDeleteTrack} />
+            <TrackCard
+              key={t.slug}
+              track={t}
+              onDelete={handleDeleteTrack}
+            />
           ))}
         </div>
       </section>

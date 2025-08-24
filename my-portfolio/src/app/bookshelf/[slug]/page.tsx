@@ -7,6 +7,7 @@ import FileUploader from "@/components/FileUploader";
 import AttachmentRenderer from "@/components/AttachmentRenderer";
 import type { BookData } from "@/utils/bookData";
 import styles from "@/styles/pages/DetailPage.module.css";
+import EditableText from "@/components/EditableText";
 
 export default function BookDetailPage() {
   const params = useParams();
@@ -21,6 +22,67 @@ export default function BookDetailPage() {
   const fileInputRef = useRef<HTMLInputElement | null>(null);
 
   const admin = isAdmin();
+
+  const saveTitle = async (newTitle: string) => {
+    if (!book) return;
+    const prev = book;
+    setBook({ ...book, title: newTitle });
+    const res = await fetch(`/api/books/${book.slug}`, {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ title: newTitle }),
+    });
+    if (!res.ok) setBook(prev);
+  };
+
+  const saveAuthor = async (newAuthor: string) => {
+    if (!book) return;
+    const prev = book;
+    setBook({ ...book, author: newAuthor });
+    const res = await fetch(`/api/books/${book.slug}`, {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ author: newAuthor }),
+    });
+    if (!res.ok) setBook(prev);
+  };
+
+  const saveYear = async (newYear: string) => {
+    if (!book) return;
+    const prev = book;
+    const year = parseInt(newYear, 10) || undefined;
+    setBook({ ...book, year });
+    const res = await fetch(`/api/books/${book.slug}`, {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ year }),
+    });
+    if (!res.ok) setBook(prev);
+  };
+
+  const saveGenre = async (newGenre: string) => {
+    if (!book) return;
+    const prev = book;
+    setBook({ ...book, genre: newGenre });
+    const res = await fetch(`/api/books/${book.slug}`, {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ genre: newGenre }),
+    });
+    if (!res.ok) setBook(prev);
+  };
+
+  const saveDescription = async (newDesc: string) => {
+    if (!book) return;
+    const prev = book;
+    setBook({ ...book, description: newDesc });
+    const res = await fetch(`/api/books/${book.slug}`, {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ description: newDesc }),
+    });
+    if (!res.ok) setBook(prev);
+  };
 
   const load = async () => {
     setLoading(true);
@@ -107,12 +169,42 @@ export default function BookDetailPage() {
 
   return (
     <div>
-      <h1>{book.title}</h1>
+      <EditableText
+        text={book.title}
+        onSave={saveTitle}
+        isAdmin={admin}
+        tag="h1"
+      />
       <p>
-        <strong>{book.author}</strong>
-        {book.year && ` (${book.year})`}
+        <strong>
+          <EditableText
+            text={book.author}
+            onSave={saveAuthor}
+            isAdmin={admin}
+            tag="span"
+          />
+        </strong>
+        {" "}
+        {book.year !== undefined && (
+          <EditableText
+            text={book.year.toString()}
+            onSave={saveYear}
+            isAdmin={admin}
+            tag="span"
+          />
+        )}
       </p>
-      {book.genre && <p>Genre: {book.genre}</p>}
+      {book.genre !== undefined && (
+        <p>
+          Genre:{" "}
+          <EditableText
+            text={book.genre}
+            onSave={saveGenre}
+            isAdmin={admin}
+            tag="span"
+          />
+        </p>
+      )}
 
       {book.image && (
         <img src={book.image} alt={book.title} className={styles.image} />
@@ -139,7 +231,12 @@ export default function BookDetailPage() {
         </div>
       )}
 
-      <p>{book.description}</p>
+      <EditableText
+        text={book.description}
+        onSave={saveDescription}
+        isAdmin={admin}
+        tag="p"
+      />
 
       <hr className={styles.divider} />
 

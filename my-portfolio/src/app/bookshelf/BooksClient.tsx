@@ -48,7 +48,11 @@ export default function BooksClient() {
       )}
       <div className={styles.grid}>
         {books.map((b) => (
-          <BookCard key={b.slug} book={b} onDelete={handleDeleteBook} />
+          <BookCard
+            key={b.slug}
+            book={b}
+            onDelete={handleDeleteBook}
+          />
         ))}
       </div>
     </div>
