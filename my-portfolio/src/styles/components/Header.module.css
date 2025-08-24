@@ -11,4 +11,7 @@
 
 .link {
   margin: 0 1rem;
+  font-family: var(--font-heading);
+  font-weight: 700;
+  color: var(--text-color);
 }

@@ -28,6 +28,25 @@ function getDeleteTargetForImage(image?: string, imagePathname?: string) {
   return undefined;
 }
 
+export async function PATCH(
+  req: Request,
+  ctx: { params: Promise<{ slug: string }> }
+) {
+  const { slug } = await ctx.params;
+  const { title, description, url } = await req.json();
+  const raw = await fs.readFile(PLAYLISTS_PATH, "utf-8");
+  const playlists: PlaylistData[] = JSON.parse(raw);
+  const playlist = playlists.find((p) => p.slug === slug);
+  if (!playlist) {
+    return NextResponse.json({ error: "Playlist not found" }, { status: 404 });
+  }
+  if (title !== undefined) playlist.title = title;
+  if (description !== undefined) playlist.description = description;
+  if (url !== undefined) playlist.url = url;
+  await fs.writeFile(PLAYLISTS_PATH, JSON.stringify(playlists, null, 2));
+  return NextResponse.json(playlist);
+}
+
 export async function DELETE(
   _req: Request,
   ctx: { params: Promise<{ slug: string }> }

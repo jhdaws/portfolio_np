@@ -8,11 +8,13 @@
   font-size: 2rem;
   font-weight: 700;
   margin-bottom: 0.5rem;
+  text-align: center;
 }
 
 .subtitle {
-  color: #666;
+  color: var(--muted-color);
   margin-bottom: 2rem;
+  text-align: center;
 }
 
 .list {
@@ -27,11 +29,12 @@
   display: flex;
   align-items: center;
   gap: 1rem;
-  border: 1px solid #e5e7eb;
+  border: 1px solid var(--card-border);
   border-radius: 8px;
   padding: 1rem;
-  background-color: white;
+  background-color: var(--card-bg);
   transition: transform 0.15s ease;
+  color: var(--text-color);
 }
 
 .item:hover {
@@ -40,7 +43,7 @@
 
 .icon {
   flex-shrink: 0;
-  color: #0077b5; /* default color; overridden per item if you want */
+  color: var(--accent-color);
 }
 
 .info {
@@ -53,10 +56,11 @@
 }
 
 .link {
-  color: #2563eb;
+  color: var(--text-color);
   text-decoration: none;
 }
 
 .link:hover {
   text-decoration: underline;
+  color: var(--accent-color);
 }

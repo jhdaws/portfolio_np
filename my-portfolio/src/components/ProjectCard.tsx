@@ -1,8 +1,10 @@
 "use client";
 
 import Link from "next/link";
+import { useState } from "react";
 import styles from "@/styles/components/ProjectCard.module.css";
 import { isAdmin } from "@/utils/auth";
+import EditProjectModal from "@/components/EditProjectModal";
 
 export type ProjectData = {
   title: string;
@@ -14,10 +16,12 @@ export type ProjectData = {
 type Props = {
   project: ProjectData;
   onDelete?: (slug: string) => void;
+  onUpdate?: () => void;
 };
 
-export default function ProjectCard({ project, onDelete }: Props) {
+export default function ProjectCard({ project, onDelete, onUpdate }: Props) {
   const admin = isAdmin();
+  const [editing, setEditing] = useState(false);
 
   const handleDelete = async () => {
     const confirmed = confirm(`Delete project "${project.title}"?`);
@@ -48,9 +52,17 @@ export default function ProjectCard({ project, onDelete }: Props) {
         <p>{project.description}</p>
       </Link>
       {admin && (
-        <button onClick={handleDelete} className={styles.deleteButton}>
-          🗑 Delete
-        </button>
+        <div className={styles.buttonRow}>
+          <button onClick={() => setEditing(true)}>✏️ Edit</button>
+          <button onClick={handleDelete}>🗑 Delete</button>
+        </div>
+      )}
+      {editing && (
+        <EditProjectModal
+          project={project}
+          onClose={() => setEditing(false)}
+          onUpdate={onUpdate ?? (() => {})}
+        />
       )}
     </div>
   );

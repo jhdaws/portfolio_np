@@ -1,17 +1,21 @@
 "use client";
 
 import Link from "next/link";
+import { useState } from "react";
 import styles from "@/styles/components/ProjectCard.module.css";
 import { isAdmin } from "@/utils/auth";
 import type { TrackData } from "@/utils/trackData";
+import EditTrackModal from "@/components/EditTrackModal";
 
 interface Props {
   track: TrackData;
   onDelete?: (slug: string) => void;
+  onUpdate?: () => void;
 }
 
-export default function TrackCard({ track, onDelete }: Props) {
+export default function TrackCard({ track, onDelete, onUpdate }: Props) {
   const admin = isAdmin();
+  const [editing, setEditing] = useState(false);
 
   const handleDelete = async () => {
     const confirmed = confirm(`Delete track "${track.title}"?`);
@@ -45,9 +49,17 @@ export default function TrackCard({ track, onDelete }: Props) {
         <p>{track.description}</p>
       </Link>
       {admin && (
-        <button onClick={handleDelete} className={styles.deleteButton}>
-          🗑 Delete
-        </button>
+        <div className={styles.buttonRow}>
+          <button onClick={() => setEditing(true)}>✏️ Edit</button>
+          <button onClick={handleDelete}>🗑 Delete</button>
+        </div>
+      )}
+      {editing && (
+        <EditTrackModal
+          track={track}
+          onClose={() => setEditing(false)}
+          onUpdate={onUpdate ?? (() => {})}
+        />
       )}
     </div>
   );

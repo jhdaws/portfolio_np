@@ -1,16 +1,20 @@
 "use client";
 
+import { useState } from "react";
 import styles from "@/styles/components/ProjectCard.module.css";
 import { isAdmin } from "@/utils/auth";
 import type { PlaylistData } from "@/utils/playlistData";
+import EditPlaylistModal from "@/components/EditPlaylistModal";
 
 interface Props {
   playlist: PlaylistData;
   onDelete?: (slug: string) => void;
+  onUpdate?: () => void;
 }
 
-export default function PlaylistCard({ playlist, onDelete }: Props) {
+export default function PlaylistCard({ playlist, onDelete, onUpdate }: Props) {
   const admin = isAdmin();
+  const [editing, setEditing] = useState(false);
 
   const handleDelete = async () => {
     const confirmed = confirm(`Delete playlist "${playlist.title}"?`);
@@ -39,9 +43,17 @@ export default function PlaylistCard({ playlist, onDelete }: Props) {
         <p>{playlist.description}</p>
       </a>
       {admin && (
-        <button onClick={handleDelete} className={styles.deleteButton}>
-          🗑 Delete
-        </button>
+        <div className={styles.buttonRow}>
+          <button onClick={() => setEditing(true)}>✏️ Edit</button>
+          <button onClick={handleDelete}>🗑 Delete</button>
+        </div>
+      )}
+      {editing && (
+        <EditPlaylistModal
+          playlist={playlist}
+          onClose={() => setEditing(false)}
+          onUpdate={onUpdate ?? (() => {})}
+        />
       )}
     </div>
   );

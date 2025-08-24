@@ -55,6 +55,7 @@ export default function ProjectsClient() {
             key={p.slug}
             project={p}
             onDelete={handleDeleteProject}
+            onUpdate={loadProjects}
           />
         ))}
       </div>
