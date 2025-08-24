@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { isAdmin, logout } from "@/utils/auth";
 import { useRouter } from "next/navigation";
+import styles from "@/styles/components/LoginToggle.module.css";
 
 export default function LoginToggle() {
   const [admin, setAdmin] = useState(false);
@@ -21,10 +22,7 @@ export default function LoginToggle() {
   };
 
   return (
-    <button
-      onClick={handleClick}
-      style={{ position: "absolute", top: "1rem", left: "1rem" }}
-    >
+    <button onClick={handleClick} className={styles.button}>
       {admin ? "Logout" : "Login"}
     </button>
   );

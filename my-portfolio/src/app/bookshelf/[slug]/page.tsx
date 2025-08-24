@@ -6,6 +6,7 @@ import { isAdmin } from "@/utils/auth";
 import FileUploader from "@/components/FileUploader";
 import AttachmentRenderer from "@/components/AttachmentRenderer";
 import type { BookData } from "@/utils/bookData";
+import styles from "@/styles/pages/DetailPage.module.css";
 
 export default function BookDetailPage() {
   const params = useParams();
@@ -114,27 +115,16 @@ export default function BookDetailPage() {
       {book.genre && <p>Genre: {book.genre}</p>}
 
       {book.image && (
-        <img
-          src={book.image}
-          alt={book.title}
-          style={{ maxWidth: "100%", maxHeight: "400px", borderRadius: "8px" }}
-        />
+        <img src={book.image} alt={book.title} className={styles.image} />
       )}
 
       {admin && (
-        <div
-          style={{
-            margin: "0.75rem 0 1.5rem",
-            display: "flex",
-            gap: "0.5rem",
-            alignItems: "center",
-          }}
-        >
+        <div className={styles.adminImageControls}>
           <input
             ref={fileInputRef}
             type="file"
             accept="image/*"
-            style={{ display: "none" }}
+            className={styles.fileInput}
             onChange={handleFileSelected}
           />
           <button onClick={handleClickChangeImage} disabled={imgBusy}>
@@ -145,15 +135,13 @@ export default function BookDetailPage() {
               Remove Image
             </button>
           )}
-          {imgBusy && (
-            <span style={{ fontSize: 12, opacity: 0.7 }}>Saving…</span>
-          )}
+          {imgBusy && <span className={styles.saving}>Saving…</span>}
         </div>
       )}
 
       <p>{book.description}</p>
 
-      <hr style={{ margin: "2rem 0" }} />
+      <hr className={styles.divider} />
 
       <AttachmentRenderer
         attachments={book.attachments || []}

@@ -2,31 +2,26 @@
 
 import LoginToggle from "@/components/LoginToggle";
 import Link from "next/link";
+import styles from "@/styles/components/Header.module.css";
 
 export default function Header() {
   return (
-    <header
-      style={{
-        padding: "1rem",
-        borderBottom: "1px solid #ccc",
-        position: "relative",
-      }}
-    >
+    <header className={styles.header}>
       <LoginToggle />
-      <nav style={{ textAlign: "center" }}>
-        <Link href="/" style={{ margin: "0 1rem" }}>
+      <nav className={styles.nav}>
+        <Link href="/" className={styles.link}>
           Home
         </Link>
-        <Link href="/projects" style={{ margin: "0 1rem" }}>
+        <Link href="/projects" className={styles.link}>
           Projects
         </Link>
-        <Link href="/bookshelf" style={{ margin: "0 1rem" }}>
+        <Link href="/bookshelf" className={styles.link}>
           Bookshelf
         </Link>
-        <Link href="/music" style={{ margin: "0 1rem" }}>
+        <Link href="/music" className={styles.link}>
           Music
         </Link>
-        <Link href="/contact" style={{ margin: "0 1rem" }}>
+        <Link href="/contact" className={styles.link}>
           Contact
         </Link>
       </nav>

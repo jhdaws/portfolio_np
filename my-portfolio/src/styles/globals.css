@@ -1,4 +1,11 @@
-/* styles/globals.css */
+/* Global dark theme */
+:root {
+  --bg-color: #0d1117;
+  --text-color: #e6edf3;
+  --accent-color: #c084fc;
+  --muted-color: #999;
+}
+
 * {
   box-sizing: border-box;
   margin: 0;
@@ -6,8 +13,18 @@
 }
 
 body {
-  font-family: sans-serif;
-  background-color: #f9f9f9;
-  color: #222;
+  font-family: Georgia, serif;
+  background-color: var(--bg-color);
+  color: var(--text-color);
   line-height: 1.6;
+  min-height: 100vh;
+}
+
+a {
+  color: var(--accent-color);
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
 }

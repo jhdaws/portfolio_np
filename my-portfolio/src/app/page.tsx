@@ -3,6 +3,8 @@
 import { useEffect, useRef, useState } from "react";
 import EditableText from "@/components/EditableText";
 import { isAdmin } from "@/utils/auth";
+import Link from "next/link";
+import styles from "@/styles/pages/Home.module.css";
 
 type HomeContent = {
   title: string;
@@ -123,58 +125,65 @@ export default function HomePage() {
   if (loading || !content) return <p>Loading...</p>;
 
   return (
-    <div>
-      <EditableText
-        text={content.title}
-        onSave={saveTitle}
-        isAdmin={admin}
-        tag="h1"
-      />
-      <EditableText
-        text={content.description}
-        onSave={saveDescription}
-        isAdmin={admin}
-        tag="p"
-      />
+    <div className={styles.container}>
+      <div className={styles.text}>
+        <div className={styles.title}>
+          <EditableText
+            text={content.title}
+            onSave={saveTitle}
+            isAdmin={admin}
+            tag="h1"
+          />
+        </div>
+        <div className={styles.description}>
+          <EditableText
+            text={content.description}
+            onSave={saveDescription}
+            isAdmin={admin}
+            tag="p"
+          />
+        </div>
+
+        <nav className={styles.links}>
+          <Link href="/projects" className={styles.link}>
+            Projects
+          </Link>
+          <Link href="/bookshelf" className={styles.link}>
+            Bookshelf
+          </Link>
+          <Link href="/music" className={styles.link}>
+            Music
+          </Link>
+          <Link href="/contact" className={styles.link}>
+            Contact
+          </Link>
+        </nav>
+
+        {admin && (
+          <div className={styles.adminControls}>
+            <input
+              ref={fileInputRef}
+              type="file"
+              accept="image/*"
+              className={styles.fileInput}
+              onChange={handleFileSelected}
+            />
+            <button onClick={handleClickChangeImage} disabled={busy}>
+              {content.image ? "Change Image" : "Add Image"}
+            </button>
+            {content.image && (
+              <button onClick={handleRemoveImage} disabled={busy}>
+                Remove Image
+              </button>
+            )}
+            {busy && <span className={styles.saving}>Saving…</span>}
+          </div>
+        )}
+      </div>
 
       {content.image && (
-        <img
-          src={content.image}
-          alt="Homepage"
-          style={{
-            maxWidth: "100%",
-            maxHeight: 420,
-            borderRadius: 8,
-            marginTop: 12,
-          }}
-        />
-      )}
-
-      {admin && (
-        <div
-          style={{
-            marginTop: 12,
-            display: "flex",
-            gap: 8,
-            alignItems: "center",
-          }}
-        >
-          <input
-            ref={fileInputRef}
-            type="file"
-            accept="image/*"
-            style={{ display: "none" }}
-            onChange={handleFileSelected}
-          />
-          <button onClick={handleClickChangeImage} disabled={busy}>
-            {content.image ? "Change Image" : "Add Image"}
-          </button>
-          {content.image && (
-            <button onClick={handleRemoveImage} disabled={busy}>
-              Remove Image
-            </button>
-          )}
-          {busy && <span style={{ fontSize: 12, opacity: 0.7 }}>Saving…</span>}
+        <div className={styles.imageWrapper}>
+          <img src={content.image} alt="Homepage" className={styles.image} />
         </div>
       )}
     </div>

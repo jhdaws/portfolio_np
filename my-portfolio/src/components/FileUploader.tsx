@@ -72,7 +72,7 @@ export default function FileUploader({
         <input
           type="file"
           multiple
-          style={{ display: "none" }}
+          className={styles.input}
           onChange={handleFileInput}
         />
         <div

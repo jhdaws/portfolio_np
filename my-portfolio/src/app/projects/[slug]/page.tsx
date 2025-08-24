@@ -6,6 +6,7 @@ import { isAdmin } from "@/utils/auth";
 import FileUploader from "@/components/FileUploader";
 import AttachmentRenderer from "@/components/AttachmentRenderer";
 import type { ProjectData } from "@/utils/projectData";
+import styles from "@/styles/pages/DetailPage.module.css";
 
 export default function ProjectDetailPage() {
   const params = useParams();
@@ -115,24 +116,17 @@ export default function ProjectDetailPage() {
         <img
           src={project.image}
           alt={project.title}
-          style={{ maxWidth: "100%", maxHeight: "400px", borderRadius: "8px" }}
+          className={styles.image}
         />
       )}
 
       {admin && (
-        <div
-          style={{
-            margin: "0.75rem 0 1.5rem",
-            display: "flex",
-            gap: "0.5rem",
-            alignItems: "center",
-          }}
-        >
+        <div className={styles.adminImageControls}>
           <input
             ref={fileInputRef}
             type="file"
             accept="image/*"
-            style={{ display: "none" }}
+            className={styles.fileInput}
             onChange={handleFileSelected}
           />
           <button onClick={handleClickChangeImage} disabled={imgBusy}>
@@ -143,15 +137,13 @@ export default function ProjectDetailPage() {
               Remove Image
             </button>
           )}
-          {imgBusy && (
-            <span style={{ fontSize: 12, opacity: 0.7 }}>Saving…</span>
-          )}
+          {imgBusy && <span className={styles.saving}>Saving…</span>}
         </div>
       )}
 
       <p>{project.description}</p>
 
-      <hr style={{ margin: "2rem 0" }} />
+      <hr className={styles.divider} />
 
       <AttachmentRenderer
         attachments={project.attachments || []}

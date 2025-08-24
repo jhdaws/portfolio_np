@@ -6,6 +6,7 @@ import { isAdmin } from "@/utils/auth";
 import FileUploader from "@/components/FileUploader";
 import AttachmentRenderer from "@/components/AttachmentRenderer";
 import type { TrackData } from "@/utils/trackData";
+import styles from "@/styles/pages/DetailPage.module.css";
 
 export default function TrackDetailPage() {
   const params = useParams();
@@ -112,27 +113,16 @@ export default function TrackDetailPage() {
       </p>
 
       {track.image && (
-        <img
-          src={track.image}
-          alt={track.title}
-          style={{ maxWidth: "100%", maxHeight: "400px", borderRadius: "8px" }}
-        />
+        <img src={track.image} alt={track.title} className={styles.image} />
       )}
 
       {admin && (
-        <div
-          style={{
-            margin: "0.75rem 0 1.5rem",
-            display: "flex",
-            gap: "0.5rem",
-            alignItems: "center",
-          }}
-        >
+        <div className={styles.adminImageControls}>
           <input
             ref={fileInputRef}
             type="file"
             accept="image/*"
-            style={{ display: "none" }}
+            className={styles.fileInput}
             onChange={handleFileSelected}
           />
           <button onClick={handleClickChangeImage} disabled={imgBusy}>
@@ -143,15 +133,13 @@ export default function TrackDetailPage() {
               Remove Image
             </button>
           )}
-          {imgBusy && (
-            <span style={{ fontSize: 12, opacity: 0.7 }}>Saving…</span>
-          )}
+          {imgBusy && <span className={styles.saving}>Saving…</span>}
         </div>
       )}
 
       <p>{track.description}</p>
 
-      <hr style={{ margin: "2rem 0" }} />
+      <hr className={styles.divider} />
 
       <AttachmentRenderer
         attachments={track.attachments || []}

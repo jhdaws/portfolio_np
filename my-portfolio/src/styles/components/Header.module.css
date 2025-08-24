@@ -1,0 +1,14 @@
+.header {
+  padding: 1rem;
+  border-bottom: 1px solid var(--accent-color);
+  position: relative;
+  background: rgba(255, 255, 255, 0.02);
+}
+
+.nav {
+  text-align: center;
+}
+
+.link {
+  margin: 0 1rem;
+}
