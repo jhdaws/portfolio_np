@@ -1,11 +1,11 @@
-/* Global dark theme */
+/* Global dark theme inspired by the Nord palette */
 :root {
-  --bg-color: #0d1117;
-  --text-color: #fdd023; /* LSU gold */
-  --accent-color: #461d7c; /* LSU purple */
-  --muted-color: #b79a00;
-  --card-bg: #161b22;
-  --card-border: #461d7c;
+  --bg-color: #2e3440;
+  --text-color: #eceff4;
+  --accent-color: #81a1c1;
+  --muted-color: #4c566a;
+  --card-bg: #3b4252;
+  --card-border: #81a1c1;
 }
 
 * {
@@ -52,7 +52,7 @@ button {
 }
 
 button:hover:not(:disabled) {
-  background: #552b9a;
+  background: #5e81ac;
 }
 
 button:disabled {

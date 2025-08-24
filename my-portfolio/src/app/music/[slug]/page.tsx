@@ -7,6 +7,7 @@ import FileUploader from "@/components/FileUploader";
 import AttachmentRenderer from "@/components/AttachmentRenderer";
 import type { TrackData } from "@/utils/trackData";
 import styles from "@/styles/pages/DetailPage.module.css";
+import EditableText from "@/components/EditableText";
 
 export default function TrackDetailPage() {
   const params = useParams();
@@ -21,6 +22,42 @@ export default function TrackDetailPage() {
   const fileInputRef = useRef<HTMLInputElement | null>(null);
 
   const admin = isAdmin();
+
+  const saveTitle = async (newTitle: string) => {
+    if (!track) return;
+    const prev = track;
+    setTrack({ ...track, title: newTitle });
+    const res = await fetch(`/api/tracks/${track.slug}`, {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ title: newTitle }),
+    });
+    if (!res.ok) setTrack(prev);
+  };
+
+  const saveArtist = async (newArtist: string) => {
+    if (!track) return;
+    const prev = track;
+    setTrack({ ...track, artist: newArtist });
+    const res = await fetch(`/api/tracks/${track.slug}`, {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ artist: newArtist }),
+    });
+    if (!res.ok) setTrack(prev);
+  };
+
+  const saveDescription = async (newDesc: string) => {
+    if (!track) return;
+    const prev = track;
+    setTrack({ ...track, description: newDesc });
+    const res = await fetch(`/api/tracks/${track.slug}`, {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ description: newDesc }),
+    });
+    if (!res.ok) setTrack(prev);
+  };
 
   const load = async () => {
     setLoading(true);
@@ -107,9 +144,21 @@ export default function TrackDetailPage() {
 
   return (
     <div>
-      <h1>{track.title}</h1>
+      <EditableText
+        text={track.title}
+        onSave={saveTitle}
+        isAdmin={admin}
+        tag="h1"
+      />
       <p>
-        <strong>{track.artist}</strong>
+        <strong>
+          <EditableText
+            text={track.artist}
+            onSave={saveArtist}
+            isAdmin={admin}
+            tag="span"
+          />
+        </strong>
       </p>
 
       {track.image && (
@@ -137,7 +186,12 @@ export default function TrackDetailPage() {
         </div>
       )}
 
-      <p>{track.description}</p>
+      <EditableText
+        text={track.description}
+        onSave={saveDescription}
+        isAdmin={admin}
+        tag="p"
+      />
 
       <hr className={styles.divider} />
 

@@ -68,7 +68,6 @@ export default function MusicClient() {
               key={p.slug}
               playlist={p}
               onDelete={handleDeletePlaylist}
-              onUpdate={loadData}
             />
           ))}
         </div>
@@ -95,7 +94,6 @@ export default function MusicClient() {
               key={t.slug}
               track={t}
               onDelete={handleDeleteTrack}
-              onUpdate={loadData}
             />
           ))}
         </div>

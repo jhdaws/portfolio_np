@@ -52,7 +52,6 @@ export default function BooksClient() {
             key={b.slug}
             book={b}
             onDelete={handleDeleteBook}
-            onUpdate={loadBooks}
           />
         ))}
       </div>

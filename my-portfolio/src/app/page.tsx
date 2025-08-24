@@ -197,7 +197,7 @@ export default function HomePage() {
 
       <div className={styles.contact}>
         <Link href="/contact" className={styles.contactButton}>
-          <FaEnvelope size={40} />
+          <FaEnvelope size={60} />
           Contact
         </Link>
       </div>
