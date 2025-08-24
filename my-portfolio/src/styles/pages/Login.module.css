@@ -1,0 +1,12 @@
+.form {
+  padding: 2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  max-width: 320px;
+  margin: 0 auto;
+}
+
+.error {
+  color: #ff6b6b;
+}

@@ -99,7 +99,7 @@ export default function NewBookModal({ onClose, onAdd }: Props) {
           <input
             type="file"
             onChange={handleFileChange}
-            style={{ display: "none" }}
+            className={styles.fileInput}
           />
         </label>
         <button onClick={handleSubmit} disabled={uploading}>

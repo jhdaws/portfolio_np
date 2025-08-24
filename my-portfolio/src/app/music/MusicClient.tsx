@@ -5,8 +5,10 @@ import PlaylistCard from "@/components/PlaylistCard";
 import TrackCard from "@/components/TrackCard";
 import NewPlaylistModal from "@/components/NewPlaylistModal";
 import NewTrackModal from "@/components/NewTrackModal";
-import styles from "@/styles/pages/Projects.module.css";
+import pageStyles from "@/styles/pages/Projects.module.css";
+import sectionStyles from "@/styles/pages/MusicClient.module.css";
 import { isAdmin } from "@/utils/auth";
+import clsx from "clsx";
 import type { PlaylistData } from "@/utils/playlistData";
 import type { TrackData } from "@/utils/trackData";
 
@@ -42,10 +44,10 @@ export default function MusicClient() {
   };
 
   return (
-    <div className={styles.container}>
-      <h1 className={styles.title}>Music</h1>
+    <div className={pageStyles.container}>
+      <h1 className={pageStyles.title}>Music</h1>
 
-      <section style={{ width: "100%" }}>
+      <section className={sectionStyles.section}>
         <h2>Playlists</h2>
         {admin && (
           <>
@@ -60,7 +62,7 @@ export default function MusicClient() {
             )}
           </>
         )}
-        <div className={styles.grid}>
+        <div className={pageStyles.grid}>
           {playlists.map((p) => (
             <PlaylistCard
               key={p.slug}
@@ -71,7 +73,9 @@ export default function MusicClient() {
         </div>
       </section>
 
-      <section style={{ width: "100%", marginTop: "2rem" }}>
+      <section
+        className={clsx(sectionStyles.section, sectionStyles.spaced)}
+      >
         <h2>Albums & Songs</h2>
         {admin && (
           <>
@@ -84,7 +88,7 @@ export default function MusicClient() {
             )}
           </>
         )}
-        <div className={styles.grid}>
+        <div className={pageStyles.grid}>
           {tracks.map((t) => (
             <TrackCard key={t.slug} track={t} onDelete={handleDeleteTrack} />
           ))}

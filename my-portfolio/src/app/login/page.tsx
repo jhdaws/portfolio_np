@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import styles from "@/styles/pages/Login.module.css";
 
 export default function LoginPage() {
   const [password, setPassword] = useState("");
@@ -25,7 +26,7 @@ export default function LoginPage() {
   };
 
   return (
-    <form onSubmit={handleSubmit} style={{ padding: "2rem" }}>
+    <form onSubmit={handleSubmit} className={styles.form}>
       <h2>Admin Login</h2>
       <input
         type="password"
@@ -35,7 +36,7 @@ export default function LoginPage() {
         required
       />
       <button type="submit">Login</button>
-      {error && <p style={{ color: "red" }}>{error}</p>}
+      {error && <p className={styles.error}>{error}</p>}
     </form>
   );
 }

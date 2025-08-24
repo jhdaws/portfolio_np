@@ -1,0 +1,11 @@
+.footer {
+  text-align: center;
+  padding: 1rem;
+  border-top: 1px solid var(--accent-color);
+  background: rgba(255, 255, 255, 0.02);
+  margin-top: auto;
+}
+
+.footer a {
+  color: var(--accent-color);
+}
