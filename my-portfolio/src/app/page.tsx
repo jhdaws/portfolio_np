@@ -5,6 +5,12 @@ import EditableText from "@/components/EditableText";
 import { isAdmin } from "@/utils/auth";
 import Link from "next/link";
 import styles from "@/styles/pages/Home.module.css";
+import {
+  FaBook,
+  FaEnvelope,
+  FaMusic,
+  FaProjectDiagram,
+} from "react-icons/fa";
 
 type HomeContent = {
   title: string;
@@ -125,67 +131,76 @@ export default function HomePage() {
   if (loading || !content) return <p>Loading...</p>;
 
   return (
-    <div className={styles.container}>
-      <div className={styles.text}>
-        <div className={styles.title}>
-          <EditableText
-            text={content.title}
-            onSave={saveTitle}
-            isAdmin={admin}
-            tag="h1"
-          />
-        </div>
-        <div className={styles.description}>
-          <EditableText
-            text={content.description}
-            onSave={saveDescription}
-            isAdmin={admin}
-            tag="p"
-          />
-        </div>
-
-        <nav className={styles.links}>
-          <Link href="/projects" className={styles.link}>
-            Projects
-          </Link>
-          <Link href="/bookshelf" className={styles.link}>
-            Bookshelf
-          </Link>
-          <Link href="/music" className={styles.link}>
-            Music
-          </Link>
-          <Link href="/contact" className={styles.link}>
-            Contact
-          </Link>
-        </nav>
-
-        {admin && (
-          <div className={styles.adminControls}>
-            <input
-              ref={fileInputRef}
-              type="file"
-              accept="image/*"
-              className={styles.fileInput}
-              onChange={handleFileSelected}
+    <div className={styles.wrapper}>
+      <div className={styles.hero}>
+        <div className={styles.text}>
+          <div className={styles.title}>
+            <EditableText
+              text={content.title}
+              onSave={saveTitle}
+              isAdmin={admin}
+              tag="h1"
             />
-            <button onClick={handleClickChangeImage} disabled={busy}>
-              {content.image ? "Change Image" : "Add Image"}
-            </button>
-            {content.image && (
-              <button onClick={handleRemoveImage} disabled={busy}>
-                Remove Image
+          </div>
+          <div className={styles.description}>
+            <EditableText
+              text={content.description}
+              onSave={saveDescription}
+              isAdmin={admin}
+              tag="p"
+            />
+          </div>
+
+          {admin && (
+            <div className={styles.adminControls}>
+              <input
+                ref={fileInputRef}
+                type="file"
+                accept="image/*"
+                className={styles.fileInput}
+                onChange={handleFileSelected}
+              />
+              <button onClick={handleClickChangeImage} disabled={busy}>
+                {content.image ? "Change Image" : "Add Image"}
               </button>
-            )}
-            {busy && <span className={styles.saving}>Saving…</span>}
+              {content.image && (
+                <button onClick={handleRemoveImage} disabled={busy}>
+                  Remove Image
+                </button>
+              )}
+              {busy && <span className={styles.saving}>Saving…</span>}
+            </div>
+          )}
+        </div>
+
+        {content.image && (
+          <div className={styles.imageWrapper}>
+            <img src={content.image} alt="Homepage" className={styles.image} />
           </div>
         )}
       </div>
 
-      {content.image && (
-        <div className={styles.imageWrapper}>
-          <img src={content.image} alt="Homepage" className={styles.image} />
-        </div>
-      )}
+      <nav className={styles.nav}>
+        <Link href="/projects" className={styles.navButton}>
+          <FaProjectDiagram size={40} />
+          <span>Projects</span>
+        </Link>
+        <Link href="/bookshelf" className={styles.navButton}>
+          <FaBook size={40} />
+          <span>Bookshelf</span>
+        </Link>
+        <Link href="/music" className={styles.navButton}>
+          <FaMusic size={40} />
+          <span>Music</span>
+        </Link>
+      </nav>
+
+      <div className={styles.contact}>
+        <Link href="/contact" className={styles.contactButton}>
+          <FaEnvelope />
+          Contact
+        </Link>
+      </div>
     </div>
   );
 }
