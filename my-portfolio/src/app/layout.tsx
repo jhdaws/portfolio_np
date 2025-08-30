@@ -5,8 +5,8 @@ import layoutStyles from "@/styles/layout.module.css";
 import { Oswald, Roboto } from "next/font/google";
 
 export const metadata = {
-  title: "My Friend’s Portfolio",
-  description: "A personal portfolio site",
+  title: "NKP Portfolio",
+  description: "Nikhil Patel's personal portfolio site",
 };
 
 const headingFont = Oswald({

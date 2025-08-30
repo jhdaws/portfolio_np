@@ -5,12 +5,7 @@ import EditableText from "@/components/EditableText";
 import { isAdmin } from "@/utils/auth";
 import Link from "next/link";
 import styles from "@/styles/pages/Home.module.css";
-import {
-  FaBook,
-  FaEnvelope,
-  FaMusic,
-  FaProjectDiagram,
-} from "react-icons/fa";
+import { FaBook, FaEnvelope, FaMusic, FaProjectDiagram } from "react-icons/fa";
 
 type HomeContent = {
   title: string;
@@ -197,7 +192,7 @@ export default function HomePage() {
 
       <div className={styles.contact}>
         <Link href="/contact" className={styles.contactButton}>
-          <FaEnvelope size={60} />
+          <FaEnvelope size={40} />
           Contact
         </Link>
       </div>

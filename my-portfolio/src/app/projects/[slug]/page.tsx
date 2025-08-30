@@ -143,11 +143,7 @@ export default function ProjectDetailPage() {
       />
 
       {project.image && (
-        <img
-          src={project.image}
-          alt={project.title}
-          className={styles.image}
-        />
+        <img src={project.image} alt={project.title} className={styles.image} />
       )}
 
       {admin && (
@@ -191,11 +187,7 @@ export default function ProjectDetailPage() {
           <h2>Admin Attachments</h2>
           <FileUploader projectSlug={project.slug} onChange={load} />
         </div>
-      ) : (
-        <p>
-          <em>Attachments coming soon.</em>
-        </p>
-      )}
+      ) : null}
     </div>
   );
 }

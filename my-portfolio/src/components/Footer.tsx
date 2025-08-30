@@ -4,8 +4,12 @@ export default function Footer() {
   return (
     <footer className={styles.footer}>
       <p>
-        © 2025 Jack Dawson.{' '}
-        <a href="https://github.com/jackdawson" target="_blank" rel="noopener noreferrer">
+        © 2025 Jack Dawson.{" "}
+        <a
+          href="https://github.com/jhdaws/portfolio_np"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
           GitHub
         </a>
       </p>
