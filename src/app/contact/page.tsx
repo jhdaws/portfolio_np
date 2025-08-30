@@ -10,14 +10,14 @@ export default function ContactPage() {
     {
       label: "Email",
       icon: Mail,
-      href: "mailto:your@email.com",
-      display: "your@email.com",
+      href: "mailto:nikhil.k.patel@vanderbilt.edu",
+      display: "nikhil.k.patel@vanderbilt.edu",
     },
     {
       label: "LinkedIn",
       icon: Linkedin,
-      href: "https://www.linkedin.com/in/your-linkedin-username/",
-      display: "linkedin.com/in/your-linkedin-username",
+      href: "https://www.linkedin.com/in/nikhil-patel-2523601b5/",
+      display: "linkedin.com/in/nikhil-patel-2523601b5",
     },
     {
       label: "Instagram",
