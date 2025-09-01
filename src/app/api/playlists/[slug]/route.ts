@@ -1,14 +1,11 @@
 import { NextResponse } from "next/server";
-import path from "path";
-import { promises as fs } from "fs";
+import { readJson, writeJson } from "@/utils/kvJson";
 import { del } from "@vercel/blob";
 import type { PlaylistData } from "@/utils/playlistData";
 
-export const runtime = "nodejs"; // ensure Node for fs
+export const runtime = "nodejs";
+const KV_KEY = "data/playlists.json";
 
-const PLAYLISTS_PATH = path.join(process.cwd(), "src", "data", "playlists.json");
-
-// Detect if a URL points to Vercel Blob; expand this list if you use a custom domain
 function isVercelBlobUrl(u: string) {
   try {
     const { hostname } = new URL(u);
@@ -21,7 +18,6 @@ function isVercelBlobUrl(u: string) {
   }
 }
 
-// Prefer pathname; else if we only have a Blob URL, return the URL (del supports URL strings)
 function getDeleteTargetForImage(image?: string, imagePathname?: string) {
   if (imagePathname) return imagePathname; // e.g. "/bucket/key-random"
   if (image && isVercelBlobUrl(image)) return image; // full URL fallback
@@ -34,8 +30,7 @@ export async function PATCH(
 ) {
   const { slug } = await ctx.params;
   const { title, description, url } = await req.json();
-  const raw = await fs.readFile(PLAYLISTS_PATH, "utf-8");
-  const playlists: PlaylistData[] = JSON.parse(raw);
+  const playlists = await readJson<PlaylistData[]>(KV_KEY, []);
   const playlist = playlists.find((p) => p.slug === slug);
   if (!playlist) {
     return NextResponse.json({ error: "Playlist not found" }, { status: 404 });
@@ -43,7 +38,7 @@ export async function PATCH(
   if (title !== undefined) playlist.title = title;
   if (description !== undefined) playlist.description = description;
   if (url !== undefined) playlist.url = url;
-  await fs.writeFile(PLAYLISTS_PATH, JSON.stringify(playlists, null, 2));
+  await writeJson(KV_KEY, playlists);
   return NextResponse.json(playlist);
 }
 
@@ -54,12 +49,14 @@ export async function DELETE(
   try {
     const { slug } = await ctx.params;
 
-    const raw = await fs.readFile(PLAYLISTS_PATH, "utf-8");
-    const playlists: PlaylistData[] = JSON.parse(raw);
+    const playlists = await readJson<PlaylistData[]>(KV_KEY, []);
 
     const idx = playlists.findIndex((p) => p.slug === slug);
     if (idx === -1) {
-      return NextResponse.json({ error: "Playlist not found" }, { status: 404 });
+      return NextResponse.json(
+        { error: "Playlist not found" },
+        { status: 404 }
+      );
     }
 
     const playlist = playlists[idx];
@@ -80,7 +77,7 @@ export async function DELETE(
     }
 
     const remaining = playlists.filter((_, i) => i !== idx);
-    await fs.writeFile(PLAYLISTS_PATH, JSON.stringify(remaining, null, 2));
+    await writeJson(KV_KEY, remaining);
 
     return NextResponse.json({ ok: true, deletedPlaylist: playlist.slug });
   } catch (err) {

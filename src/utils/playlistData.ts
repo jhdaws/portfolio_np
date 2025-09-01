@@ -1,7 +1,6 @@
-import fs from "fs";
-import path from "path";
+import { readJson, writeJson } from "@/utils/kvJson";
 
-const dataFilePath = path.join(process.cwd(), "src/data/playlists.json");
+const KV_KEY = "data/playlists.json";
 
 export type PlaylistData = {
   slug: string;
@@ -12,16 +11,10 @@ export type PlaylistData = {
   imagePathname?: string;
 };
 
-export function getAllPlaylists(): PlaylistData[] {
-  try {
-    const fileContents = fs.readFileSync(dataFilePath, "utf-8");
-    return JSON.parse(fileContents) as PlaylistData[];
-  } catch (err) {
-    console.error("Failed to read playlists.json:", err);
-    return [];
-  }
+export async function getAllPlaylists(): Promise<PlaylistData[]> {
+  return readJson<PlaylistData[]>(KV_KEY, []);
 }
 
-export function savePlaylists(playlists: PlaylistData[]) {
-  fs.writeFileSync(dataFilePath, JSON.stringify(playlists, null, 2), "utf-8");
+export async function savePlaylists(playlists: PlaylistData[]) {
+  await writeJson(KV_KEY, playlists);
 }

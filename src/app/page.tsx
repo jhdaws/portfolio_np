@@ -109,9 +109,15 @@ export default function HomePage() {
 
     try {
       setBusy(true);
+      const prev = content;
+      // Optimistic UI: hide image immediately
+      if (content) setContent({ ...content, image: null, imagePathname: null });
+
       const res = await fetch("/api/homepage/image", { method: "DELETE" });
       if (!res.ok) {
         const err = await res.json().catch(() => ({}));
+        // rollback on failure
+        if (prev) setContent(prev);
         throw new Error(err?.error || "Failed to remove image");
       }
       await load();
@@ -131,7 +137,7 @@ export default function HomePage() {
         <div className={styles.text}>
           <div className={styles.title}>
             <EditableText
-              text={content.title}
+              text={content.title ?? ""}
               onSave={saveTitle}
               isAdmin={admin}
               tag="h1"
@@ -139,7 +145,7 @@ export default function HomePage() {
           </div>
           <div className={styles.description}>
             <EditableText
-              text={content.description}
+              text={content.description ?? ""}
               onSave={saveDescription}
               isAdmin={admin}
               tag="p"

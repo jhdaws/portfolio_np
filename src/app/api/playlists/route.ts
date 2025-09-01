@@ -4,6 +4,7 @@ import {
   savePlaylists,
   type PlaylistData,
 } from "@/utils/playlistData";
+export const dynamic = "force-dynamic";
 
 function createSlug(title: string, existing: Set<string>): string {
   const base = title
@@ -19,8 +20,10 @@ function createSlug(title: string, existing: Set<string>): string {
 }
 
 export async function GET() {
-  const playlists = getAllPlaylists();
-  return NextResponse.json(playlists);
+  const playlists = await getAllPlaylists();
+  return NextResponse.json(playlists, {
+    headers: { "Cache-Control": "no-store" },
+  });
 }
 
 export async function POST(req: NextRequest) {
@@ -29,7 +32,7 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "Missing fields" }, { status: 400 });
   }
 
-  const playlists = getAllPlaylists();
+  const playlists = await getAllPlaylists();
   const slug = createSlug(title, new Set(playlists.map((p) => p.slug)));
 
   const newPlaylist: PlaylistData = {
@@ -42,7 +45,7 @@ export async function POST(req: NextRequest) {
   };
 
   playlists.push(newPlaylist);
-  savePlaylists(playlists);
+  await savePlaylists(playlists);
 
   return NextResponse.json(newPlaylist, { status: 201 });
 }

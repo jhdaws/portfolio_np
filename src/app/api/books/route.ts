@@ -4,6 +4,8 @@ import {
   saveBooks,
   type BookData,
 } from "@/utils/bookData";
+export const dynamic = "force-dynamic";
+// JSON storage now uses Vercel KV; uploads still use Blob
 
 function createSlug(title: string, existing: Set<string>): string {
   const base = title
@@ -19,18 +21,18 @@ function createSlug(title: string, existing: Set<string>): string {
 }
 
 export async function GET() {
-  const books = getAllBooks();
-  return NextResponse.json(books);
+  const books = await getAllBooks();
+  return NextResponse.json(books, { headers: { "Cache-Control": "no-store" } });
 }
 
 export async function POST(req: NextRequest) {
-  const { title, author, description, year, genre, imageUrl } =
+  const { title, author, description, year, genre, imageUrl, imagePath } =
     await req.json();
   if (!title || !author || !description) {
     return NextResponse.json({ error: "Missing fields" }, { status: 400 });
   }
 
-  const books = getAllBooks();
+  const books = await getAllBooks();
   const slug = createSlug(title, new Set(books.map((p) => p.slug)));
 
   const newBook: BookData = {
@@ -40,12 +42,13 @@ export async function POST(req: NextRequest) {
     year,
     genre,
     image: imageUrl,
+    imagePathname: imagePath,
     slug,
     attachments: [],
   };
 
   books.push(newBook);
-  saveBooks(books);
+  await saveBooks(books);
 
   return NextResponse.json(newBook, { status: 201 });
 }

@@ -1,10 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
-import path from "path";
-import { promises as fs } from "fs";
+import { readJson, writeJson } from "@/utils/kvJson";
 import { del } from "@vercel/blob";
 import type { Attachment, ProjectData } from "@/utils/projectData";
 
-const PROJECTS_PATH = path.join(process.cwd(), "src", "data", "projects.json");
+export const runtime = "nodejs";
+const KV_KEY = "data/projects.json";
 
 export async function POST(req: NextRequest) {
   const { projectSlug, pathname }: { projectSlug: string; pathname: string } =
@@ -18,8 +18,7 @@ export async function POST(req: NextRequest) {
   }
 
   try {
-    const fileData = await fs.readFile(PROJECTS_PATH, "utf-8");
-    const projects: ProjectData[] = JSON.parse(fileData);
+    const projects = await readJson<ProjectData[]>(KV_KEY, []);
 
     const project = projects.find((p) => p.slug === projectSlug);
     if (!project) {
@@ -42,7 +41,7 @@ export async function POST(req: NextRequest) {
     }
 
     // Persist update first
-    await fs.writeFile(PROJECTS_PATH, JSON.stringify(projects, null, 2));
+    await writeJson(KV_KEY, projects);
 
     // Delete the blob (uploads use addRandomSuffix, so safe to delete directly)
     await del(pathname, {

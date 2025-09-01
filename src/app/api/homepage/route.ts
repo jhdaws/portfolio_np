@@ -1,15 +1,16 @@
 import { NextResponse } from "next/server";
-import path from "path";
-import { promises as fs } from "fs";
+import { readJson, writeJson } from "@/utils/kvJson";
 
 export const runtime = "nodejs";
-
-const HOMEPAGE_PATH = path.join(process.cwd(), "src", "data", "homepage.json");
+export const dynamic = "force-dynamic";
+const KV_KEY = "data/homepage.json";
 
 export async function GET() {
   try {
-    const raw = await fs.readFile(HOMEPAGE_PATH, "utf-8");
-    return NextResponse.json(JSON.parse(raw));
+    const data = await readJson<any>(KV_KEY, {});
+    return NextResponse.json(data, {
+      headers: { "Cache-Control": "no-store" },
+    });
   } catch (e) {
     console.error("GET homepage error:", e);
     return NextResponse.json(
@@ -27,13 +28,12 @@ export async function PATCH(req: Request) {
       description?: string;
     };
 
-    const raw = await fs.readFile(HOMEPAGE_PATH, "utf-8");
-    const data = JSON.parse(raw);
+    const data = await readJson<any>(KV_KEY, {});
 
     if (typeof title === "string") data.title = title;
     if (typeof description === "string") data.description = description;
 
-    await fs.writeFile(HOMEPAGE_PATH, JSON.stringify(data, null, 2));
+    await writeJson(KV_KEY, data);
 
     return NextResponse.json(data);
   } catch (e) {

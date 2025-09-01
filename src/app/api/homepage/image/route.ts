@@ -1,11 +1,9 @@
 import { NextResponse } from "next/server";
-import path from "path";
-import { promises as fs } from "fs";
+import { readJson, writeJson } from "@/utils/kvJson";
 import { del } from "@vercel/blob";
 
 export const runtime = "nodejs";
-
-const HOMEPAGE_PATH = path.join(process.cwd(), "src", "data", "homepage.json");
+const KV_KEY = "data/homepage.json";
 
 function isVercelBlobUrl(u?: string) {
   if (!u) return false;
@@ -38,13 +36,12 @@ export async function PATCH(req: Request) {
       return NextResponse.json({ error: "Missing image" }, { status: 400 });
     }
 
-    const raw = await fs.readFile(HOMEPAGE_PATH, "utf-8");
-    const data = JSON.parse(raw);
+    const data = await readJson<any>(KV_KEY, {});
 
     const oldTarget = targetFrom(data.image, data.imagePathname);
     if (oldTarget) {
       try {
-        await del(oldTarget); // optionally: { token: process.env.BLOB_READ_WRITE_TOKEN }
+        await del(oldTarget, { token: process.env.BLOB_READ_WRITE_TOKEN });
       } catch (e) {
         console.warn("Failed to delete old homepage image:", oldTarget, e);
       }
@@ -53,7 +50,7 @@ export async function PATCH(req: Request) {
     data.image = image;
     data.imagePathname = imagePathname ?? null;
 
-    await fs.writeFile(HOMEPAGE_PATH, JSON.stringify(data, null, 2));
+    await writeJson(KV_KEY, data);
 
     return NextResponse.json({
       ok: true,
@@ -72,13 +69,12 @@ export async function PATCH(req: Request) {
 // DELETE = remove image and delete blob
 export async function DELETE() {
   try {
-    const raw = await fs.readFile(HOMEPAGE_PATH, "utf-8");
-    const data = JSON.parse(raw);
+    const data = await readJson<any>(KV_KEY, {});
 
     const target = targetFrom(data.image, data.imagePathname);
     if (target) {
       try {
-        await del(target);
+        await del(target, { token: process.env.BLOB_READ_WRITE_TOKEN });
       } catch (e) {
         console.warn("Failed to delete homepage image:", target, e);
       }
@@ -87,7 +83,7 @@ export async function DELETE() {
     data.image = null;
     data.imagePathname = null;
 
-    await fs.writeFile(HOMEPAGE_PATH, JSON.stringify(data, null, 2));
+    await writeJson(KV_KEY, data);
 
     return NextResponse.json({ ok: true });
   } catch (e) {

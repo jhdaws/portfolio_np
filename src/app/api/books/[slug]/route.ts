@@ -1,13 +1,11 @@
 import { NextResponse } from "next/server";
-import path from "path";
-import { promises as fs } from "fs";
+import { readJson, writeJson } from "@/utils/kvJson";
 import { del } from "@vercel/blob";
 import type { BookData } from "@/utils/bookData";
 import type { Attachment } from "@/utils/projectData";
 
-export const runtime = "nodejs"; // ensure Node for fs
-
-const BOOKS_PATH = path.join(process.cwd(), "src", "data", "books.json");
+export const runtime = "nodejs";
+const KV_KEY = "data/books.json";
 
 // Detect if a URL points to Vercel Blob; expand this list if you use a custom domain
 function isVercelBlobUrl(u: string) {
@@ -35,8 +33,7 @@ export async function PATCH(
 ) {
   const { slug } = await ctx.params;
   const { title, author, description, year, genre } = await req.json();
-  const raw = await fs.readFile(BOOKS_PATH, "utf-8");
-  const books: BookData[] = JSON.parse(raw);
+  const books = await readJson<BookData[]>(KV_KEY, []);
   const book = books.find((b) => b.slug === slug);
   if (!book) {
     return NextResponse.json({ error: "Book not found" }, { status: 404 });
@@ -46,7 +43,7 @@ export async function PATCH(
   if (description !== undefined) book.description = description;
   if (year !== undefined) book.year = year;
   if (genre !== undefined) book.genre = genre;
-  await fs.writeFile(BOOKS_PATH, JSON.stringify(books, null, 2));
+  await writeJson(KV_KEY, books);
   return NextResponse.json(book);
 }
 
@@ -57,8 +54,7 @@ export async function DELETE(
   try {
     const { slug } = await ctx.params;
 
-    const raw = await fs.readFile(BOOKS_PATH, "utf-8");
-    const books: BookData[] = JSON.parse(raw);
+    const books = await readJson<BookData[]>(KV_KEY, []);
 
     const idx = books.findIndex((p) => p.slug === slug);
     if (idx === -1) {
@@ -93,7 +89,7 @@ export async function DELETE(
 
     // Remove the book and persist
     const remaining = books.filter((_, i) => i !== idx);
-    await fs.writeFile(BOOKS_PATH, JSON.stringify(remaining, null, 2));
+    await writeJson(KV_KEY, remaining);
 
     const failed = results
       .map((r, i) => ({ r, target: deleteTargets[i] }))

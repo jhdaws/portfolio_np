@@ -1,12 +1,10 @@
 import { NextResponse } from "next/server";
-import path from "path";
-import { promises as fs } from "fs";
+import { readJson, writeJson } from "@/utils/kvJson";
 import { del } from "@vercel/blob";
 import type { BookData } from "@/utils/bookData";
 
 export const runtime = "nodejs";
-
-const BOOKS_PATH = path.join(process.cwd(), "src", "data", "books.json");
+const KV_KEY = "data/books.json";
 
 // Detect if a URL points to Vercel Blob
 function isVercelBlobUrl(u?: string) {
@@ -45,8 +43,7 @@ export async function PATCH(
       return NextResponse.json({ error: "Missing image" }, { status: 400 });
     }
 
-    const raw = await fs.readFile(BOOKS_PATH, "utf-8");
-    const books: BookData[] = JSON.parse(raw);
+    const books = await readJson<BookData[]>(KV_KEY, []);
     const idx = books.findIndex((p) => p.slug === slug);
     if (idx === -1) {
       return NextResponse.json({ error: "Book not found" }, { status: 404 });
@@ -59,7 +56,7 @@ export async function PATCH(
     if (oldTarget) {
       try {
         await del(oldTarget, {
-          // token: process.env.BLOB_READ_WRITE_TOKEN,
+          token: process.env.BLOB_READ_WRITE_TOKEN,
         });
       } catch (e) {
         // best-effort: log and continue
@@ -71,7 +68,7 @@ export async function PATCH(
     proj.image = image;
     proj.imagePathname = imagePathname;
 
-    await fs.writeFile(BOOKS_PATH, JSON.stringify(books, null, 2));
+    await writeJson(KV_KEY, books);
 
     return NextResponse.json({ ok: true, image, imagePathname });
   } catch (err) {
@@ -91,8 +88,7 @@ export async function DELETE(
   try {
     const { slug } = await ctx.params;
 
-    const raw = await fs.readFile(BOOKS_PATH, "utf-8");
-    const books: BookData[] = JSON.parse(raw);
+    const books = await readJson<BookData[]>(KV_KEY, []);
     const idx = books.findIndex((p) => p.slug === slug);
     if (idx === -1) {
       return NextResponse.json({ error: "Book not found" }, { status: 404 });
@@ -105,7 +101,7 @@ export async function DELETE(
     if (target) {
       try {
         await del(target, {
-          // token: process.env.BLOB_READ_WRITE_TOKEN,
+          token: process.env.BLOB_READ_WRITE_TOKEN,
         });
       } catch (e) {
         console.warn("Failed to delete image blob:", target, e);
@@ -116,7 +112,7 @@ export async function DELETE(
     proj.image = undefined;
     proj.imagePathname = undefined;
 
-    await fs.writeFile(BOOKS_PATH, JSON.stringify(books, null, 2));
+    await writeJson(KV_KEY, books);
 
     return NextResponse.json({ ok: true });
   } catch (err) {

@@ -1,18 +1,16 @@
 import { NextRequest, NextResponse } from "next/server";
-import path from "path";
-import { promises as fs } from "fs";
+import { readJson, writeJson } from "@/utils/kvJson";
 import type { Attachment } from "@/utils/projectData";
 import type { TrackData } from "@/utils/trackData";
 
-const TRACKS_PATH = path.join(process.cwd(), "src", "data", "tracks.json");
+const KV_KEY = "data/tracks.json";
 
 export async function POST(req: NextRequest) {
   const { projectSlug, file }: { projectSlug: string; file: Attachment } =
     await req.json();
 
   try {
-    const fileData = await fs.readFile(TRACKS_PATH, "utf-8");
-    const tracks: TrackData[] = JSON.parse(fileData);
+    const tracks = await readJson<TrackData[]>(KV_KEY, []);
 
     const track = tracks.find((p) => p.slug === projectSlug);
     if (!track)
@@ -21,7 +19,7 @@ export async function POST(req: NextRequest) {
     if (!track.attachments) track.attachments = [];
     track.attachments.push(file);
 
-    await fs.writeFile(TRACKS_PATH, JSON.stringify(tracks, null, 2));
+    await writeJson(KV_KEY, tracks);
 
     return NextResponse.json({ success: true });
   } catch (err) {

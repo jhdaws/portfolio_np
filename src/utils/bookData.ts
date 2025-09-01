@@ -1,8 +1,7 @@
-import fs from "fs";
-import path from "path";
+import { readJson, writeJson } from "@/utils/kvJson";
 import type { Attachment } from "@/utils/projectData";
 
-const dataFilePath = path.join(process.cwd(), "src/data/books.json");
+const KV_KEY = "data/books.json";
 
 export type BookData = {
   slug: string;
@@ -16,16 +15,10 @@ export type BookData = {
   attachments?: Attachment[];
 };
 
-export function getAllBooks(): BookData[] {
-  try {
-    const fileContents = fs.readFileSync(dataFilePath, "utf-8");
-    return JSON.parse(fileContents) as BookData[];
-  } catch (err) {
-    console.error("Failed to read books.json:", err);
-    return [];
-  }
+export async function getAllBooks(): Promise<BookData[]> {
+  return readJson<BookData[]>(KV_KEY, []);
 }
 
-export function saveBooks(books: BookData[]) {
-  fs.writeFileSync(dataFilePath, JSON.stringify(books, null, 2), "utf-8");
+export async function saveBooks(books: BookData[]) {
+  await writeJson(KV_KEY, books);
 }

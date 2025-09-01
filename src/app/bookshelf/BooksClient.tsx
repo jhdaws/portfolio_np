@@ -13,7 +13,7 @@ export default function BooksClient() {
   const admin = isAdmin();
 
   const loadBooks = async () => {
-    const res = await fetch("/api/books");
+    const res = await fetch("/api/books", { cache: "no-store" });
     if (res.ok) {
       setBooks(await res.json());
     }

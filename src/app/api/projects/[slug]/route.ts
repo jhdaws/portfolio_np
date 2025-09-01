@@ -1,14 +1,11 @@
 import { NextResponse } from "next/server";
-import path from "path";
-import { promises as fs } from "fs";
+import { readJson, writeJson } from "@/utils/kvJson";
 import { del } from "@vercel/blob";
 import type { ProjectData, Attachment } from "@/utils/projectData";
 
-export const runtime = "nodejs"; // ensure Node for fs
+export const runtime = "nodejs";
+const KV_KEY = "data/projects.json";
 
-const PROJECTS_PATH = path.join(process.cwd(), "src", "data", "projects.json");
-
-// Detect if a URL points to Vercel Blob; expand this list if you use a custom domain
 function isVercelBlobUrl(u: string) {
   try {
     const { hostname } = new URL(u);
@@ -21,7 +18,6 @@ function isVercelBlobUrl(u: string) {
   }
 }
 
-// Prefer pathname; else if we only have a Blob URL, return the URL (del supports URL strings)
 function getDeleteTargetForImage(image?: string, imagePathname?: string) {
   if (imagePathname) return imagePathname; // e.g. "/bucket/key-random"
   if (image && isVercelBlobUrl(image)) return image; // full URL fallback
@@ -34,15 +30,14 @@ export async function PATCH(
 ) {
   const { slug } = await ctx.params;
   const { title, description } = await req.json();
-  const raw = await fs.readFile(PROJECTS_PATH, "utf-8");
-  const projects: ProjectData[] = JSON.parse(raw);
+  const projects = await readJson<ProjectData[]>(KV_KEY, []);
   const project = projects.find((p) => p.slug === slug);
   if (!project) {
     return NextResponse.json({ error: "Project not found" }, { status: 404 });
   }
   if (title !== undefined) project.title = title;
   if (description !== undefined) project.description = description;
-  await fs.writeFile(PROJECTS_PATH, JSON.stringify(projects, null, 2));
+  await writeJson(KV_KEY, projects);
   return NextResponse.json(project);
 }
 
@@ -53,8 +48,7 @@ export async function DELETE(
   try {
     const { slug } = await ctx.params;
 
-    const raw = await fs.readFile(PROJECTS_PATH, "utf-8");
-    const projects: ProjectData[] = JSON.parse(raw);
+    const projects = await readJson<ProjectData[]>(KV_KEY, []);
 
     const idx = projects.findIndex((p) => p.slug === slug);
     if (idx === -1) {
@@ -64,7 +58,6 @@ export async function DELETE(
     const project = projects[idx];
     const attachments: Attachment[] = project.attachments || [];
 
-    // Collect attachment delete targets (prefer pathname; fall back to URL if needed)
     const attachmentTargets = attachments
       .map((a) => a.pathname || a.url)
       .filter(Boolean) as string[];
@@ -89,7 +82,7 @@ export async function DELETE(
 
     // Remove the project and persist
     const remaining = projects.filter((_, i) => i !== idx);
-    await fs.writeFile(PROJECTS_PATH, JSON.stringify(remaining, null, 2));
+    await writeJson(KV_KEY, remaining);
 
     const failed = results
       .map((r, i) => ({ r, target: deleteTargets[i] }))

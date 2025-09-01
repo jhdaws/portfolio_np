@@ -1,11 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
-import path from "path";
-import { promises as fs } from "fs";
+import { readJson, writeJson } from "@/utils/kvJson";
 import { del } from "@vercel/blob";
 import type { Attachment } from "@/utils/projectData";
 import type { TrackData } from "@/utils/trackData";
 
-const TRACKS_PATH = path.join(process.cwd(), "src", "data", "tracks.json");
+export const runtime = "nodejs";
+const KV_KEY = "data/tracks.json";
 
 export async function POST(req: NextRequest) {
   const { projectSlug, pathname }: { projectSlug: string; pathname: string } =
@@ -19,8 +19,7 @@ export async function POST(req: NextRequest) {
   }
 
   try {
-    const fileData = await fs.readFile(TRACKS_PATH, "utf-8");
-    const tracks: TrackData[] = JSON.parse(fileData);
+    const tracks = await readJson<TrackData[]>(KV_KEY, []);
 
     const track = tracks.find((p) => p.slug === projectSlug);
     if (!track) {
@@ -43,7 +42,7 @@ export async function POST(req: NextRequest) {
     }
 
     // Persist update first
-    await fs.writeFile(TRACKS_PATH, JSON.stringify(tracks, null, 2));
+    await writeJson(KV_KEY, tracks);
 
     // Delete the blob (uploads use addRandomSuffix, so safe to delete directly)
     await del(pathname, {

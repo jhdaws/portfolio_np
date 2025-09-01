@@ -13,7 +13,7 @@ export default function ProjectsClient() {
   const admin = isAdmin();
 
   const loadProjects = async () => {
-    const res = await fetch("/api/projects");
+    const res = await fetch("/api/projects", { cache: "no-store" });
     if (res.ok) {
       setProjects(await res.json());
     }

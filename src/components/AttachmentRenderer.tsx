@@ -77,6 +77,19 @@ export default function AttachmentRenderer({
       if (ct.startsWith("video/")) return "video";
       if (ct.startsWith("audio/")) return "audio";
       if (ct === "application/pdf") return "pdf";
+      // Common Office MIME types
+      if (
+        [
+          "application/msword",
+          "application/vnd.ms-word",
+          "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+          "application/vnd.ms-excel",
+          "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+          "application/vnd.ms-powerpoint",
+          "application/vnd.openxmlformats-officedocument.presentationml.presentation",
+        ].includes(ct)
+      )
+        return "office";
       return "";
     })();
 
@@ -93,8 +106,8 @@ export default function AttachmentRenderer({
     if (isOneOf(["mp4", "webm", "ogg", "mov", "m4v"])) return "video";
     if (isOneOf(["mp3", "wav", "ogg", "m4a", "flac"])) return "audio";
     if (isOneOf(["pdf"])) return "pdf";
+    if (isOneOf(["doc", "docx", "xls", "xlsx", "ppt", "pptx"])) return "office";
 
-    // you can extend to "text" if your hosting allows CORS-safe inline viewing
     return "other";
   };
 
@@ -123,12 +136,24 @@ export default function AttachmentRenderer({
       );
     }
     if (kind === "pdf") {
-      // Note: some storage providers require proper headers for inline PDF.
-      // If blocked by CORS, this will still show just the link below.
       return (
         <div className={styles.previewBox}>
           <iframe
             src={`${file.url}#view=FitH`}
+            title={file.name}
+            className={styles.previewFrame}
+          />
+        </div>
+      );
+    }
+    if (kind === "office") {
+      const viewer =
+        "https://view.officeapps.live.com/op/embed.aspx?src=" +
+        encodeURIComponent(file.url);
+      return (
+        <div className={styles.previewBox}>
+          <iframe
+            src={viewer}
             title={file.name}
             className={styles.previewFrame}
           />
@@ -150,7 +175,10 @@ export default function AttachmentRenderer({
       <h3 className={styles.heading}>Attachments</h3>
       <ul className={styles.list}>
         {items.map((file, i) => (
-          <li key={file.pathname ?? `${file.url}-${i}`} className={styles.listItem}>
+          <li
+            key={file.pathname ?? `${file.url}-${i}`}
+            className={styles.listItem}
+          >
             <div className={styles.info}>
               <AttachmentPreview file={file} />
               <div className={styles.actions}>

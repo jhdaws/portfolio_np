@@ -21,8 +21,8 @@ export default function MusicClient() {
 
   const loadData = async () => {
     const [plRes, trRes] = await Promise.all([
-      fetch("/api/playlists"),
-      fetch("/api/tracks"),
+      fetch("/api/playlists", { cache: "no-store" }),
+      fetch("/api/tracks", { cache: "no-store" }),
     ]);
     if (plRes.ok) setPlaylists(await plRes.json());
     if (trRes.ok) setTracks(await trRes.json());

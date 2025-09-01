@@ -4,6 +4,8 @@ import {
   saveTracks,
   type TrackData,
 } from "@/utils/trackData";
+export const dynamic = "force-dynamic";
+// JSON storage now uses Vercel KV; uploads still use Blob
 
 function createSlug(title: string, existing: Set<string>): string {
   const base = title
@@ -19,8 +21,8 @@ function createSlug(title: string, existing: Set<string>): string {
 }
 
 export async function GET() {
-  const tracks = getAllTracks();
-  return NextResponse.json(tracks);
+  const tracks = await getAllTracks();
+  return NextResponse.json(tracks, { headers: { "Cache-Control": "no-store" } });
 }
 
 export async function POST(req: NextRequest) {
@@ -29,7 +31,7 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "Missing fields" }, { status: 400 });
   }
 
-  const tracks = getAllTracks();
+  const tracks = await getAllTracks();
   const slug = createSlug(title, new Set(tracks.map((p) => p.slug)));
 
   const newTrack: TrackData = {
@@ -43,7 +45,7 @@ export async function POST(req: NextRequest) {
   };
 
   tracks.push(newTrack);
-  saveTracks(tracks);
+  await saveTracks(tracks);
 
   return NextResponse.json(newTrack, { status: 201 });
 }

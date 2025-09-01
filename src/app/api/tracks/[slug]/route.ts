@@ -1,13 +1,11 @@
 import { NextResponse } from "next/server";
-import path from "path";
-import { promises as fs } from "fs";
+import { readJson, writeJson } from "@/utils/kvJson";
 import { del } from "@vercel/blob";
 import type { TrackData } from "@/utils/trackData";
 import type { Attachment } from "@/utils/projectData";
 
-export const runtime = "nodejs"; // ensure Node for fs
-
-const TRACKS_PATH = path.join(process.cwd(), "src", "data", "tracks.json");
+export const runtime = "nodejs";
+const KV_KEY = "data/tracks.json";
 
 // Detect if a URL points to Vercel Blob; expand this list if you use a custom domain
 function isVercelBlobUrl(u: string) {
@@ -35,8 +33,7 @@ export async function PATCH(
 ) {
   const { slug } = await ctx.params;
   const { title, artist, description } = await req.json();
-  const raw = await fs.readFile(TRACKS_PATH, "utf-8");
-  const tracks: TrackData[] = JSON.parse(raw);
+  const tracks = await readJson<TrackData[]>(KV_KEY, []);
   const track = tracks.find((t) => t.slug === slug);
   if (!track) {
     return NextResponse.json({ error: "Track not found" }, { status: 404 });
@@ -44,7 +41,7 @@ export async function PATCH(
   if (title !== undefined) track.title = title;
   if (artist !== undefined) track.artist = artist;
   if (description !== undefined) track.description = description;
-  await fs.writeFile(TRACKS_PATH, JSON.stringify(tracks, null, 2));
+  await writeJson(KV_KEY, tracks);
   return NextResponse.json(track);
 }
 
@@ -55,8 +52,7 @@ export async function DELETE(
   try {
     const { slug } = await ctx.params;
 
-    const raw = await fs.readFile(TRACKS_PATH, "utf-8");
-    const tracks: TrackData[] = JSON.parse(raw);
+    const tracks = await readJson<TrackData[]>(KV_KEY, []);
 
     const idx = tracks.findIndex((p) => p.slug === slug);
     if (idx === -1) {
@@ -91,7 +87,7 @@ export async function DELETE(
 
     // Remove the track and persist
     const remaining = tracks.filter((_, i) => i !== idx);
-    await fs.writeFile(TRACKS_PATH, JSON.stringify(remaining, null, 2));
+    await writeJson(KV_KEY, remaining);
 
     const failed = results
       .map((r, i) => ({ r, target: deleteTargets[i] }))
