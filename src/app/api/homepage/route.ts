@@ -5,9 +5,16 @@ export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 const KV_KEY = "data/homepage.json";
 
+type HomepageData = {
+  image?: string | null;
+  imagePathname?: string | null;
+  title?: string;
+  description?: string;
+};
+
 export async function GET() {
   try {
-    const data = await readJson<any>(KV_KEY, {});
+    const data = await readJson<HomepageData>(KV_KEY, {} as HomepageData);
     return NextResponse.json(data, {
       headers: { "Cache-Control": "no-store" },
     });
@@ -28,7 +35,7 @@ export async function PATCH(req: Request) {
       description?: string;
     };
 
-    const data = await readJson<any>(KV_KEY, {});
+    const data = await readJson<HomepageData>(KV_KEY, {} as HomepageData);
 
     if (typeof title === "string") data.title = title;
     if (typeof description === "string") data.description = description;

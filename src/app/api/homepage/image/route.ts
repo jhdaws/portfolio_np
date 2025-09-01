@@ -5,6 +5,13 @@ import { del } from "@vercel/blob";
 export const runtime = "nodejs";
 const KV_KEY = "data/homepage.json";
 
+type HomepageData = {
+  image?: string | null;
+  imagePathname?: string | null;
+  title?: string;
+  description?: string;
+};
+
 function isVercelBlobUrl(u?: string) {
   if (!u) return false;
   try {
@@ -36,7 +43,7 @@ export async function PATCH(req: Request) {
       return NextResponse.json({ error: "Missing image" }, { status: 400 });
     }
 
-    const data = await readJson<any>(KV_KEY, {});
+    const data = await readJson<HomepageData>(KV_KEY, {} as HomepageData);
 
     const oldTarget = targetFrom(data.image, data.imagePathname);
     if (oldTarget) {
@@ -69,7 +76,7 @@ export async function PATCH(req: Request) {
 // DELETE = remove image and delete blob
 export async function DELETE() {
   try {
-    const data = await readJson<any>(KV_KEY, {});
+    const data = await readJson<HomepageData>(KV_KEY, {} as HomepageData);
 
     const target = targetFrom(data.image, data.imagePathname);
     if (target) {

@@ -12,7 +12,7 @@ async function getClient(): Promise<RedisClientType> {
   client.on("error", (err) => {
     console.error("Redis Client Error", err);
   });
-  connecting = client.connect();
+  connecting = client.connect().then(() => {});
   await connecting;
   return client;
 }
