@@ -1,5 +1,7 @@
 .image {
   max-width: 100%;
+  width: 100%;
+  height: auto;
   max-height: 400px;
   border-radius: 8px;
   display: block;

@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import styles from "@/styles/components/ProjectCard.module.css";
 import { isAdmin } from "@/utils/auth";
 import type { PlaylistData } from "@/utils/playlistData";
@@ -29,10 +30,15 @@ export default function PlaylistCard({ playlist, onDelete }: Props) {
     <div className={styles.card}>
       <a href={playlist.url} target="_blank" rel="noopener noreferrer" className={styles.link}>
         {playlist.image && (
-          <img
+          <Image
             src={playlist.image}
             alt={playlist.title}
+            width={600}
+            height={400}
             className={styles.image}
+            sizes="(max-width: 600px) 100vw, 600px"
+            style={{ width: "100%", height: "200px" }}
+            unoptimized
           />
         )}
         <h3>{playlist.title}</h3>

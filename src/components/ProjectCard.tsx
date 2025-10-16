@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import styles from "@/styles/components/ProjectCard.module.css";
 import { isAdmin } from "@/utils/auth";
@@ -38,10 +39,15 @@ export default function ProjectCard({ project, onDelete }: Props) {
     <div className={styles.card}>
       <Link href={`/projects/${project.slug}`} className={styles.link}>
         {project.image && (
-          <img
+          <Image
             src={project.image}
             alt={project.title}
+            width={600}
+            height={400}
             className={styles.image}
+            sizes="(max-width: 600px) 100vw, 600px"
+            style={{ width: "100%", height: "200px" }}
+            unoptimized
           />
         )}
         <h3>{project.title}</h3>

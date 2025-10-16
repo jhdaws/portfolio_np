@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { useEffect, useMemo, useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { isAdmin } from "@/utils/auth";
@@ -114,10 +115,18 @@ export default function AttachmentRenderer({
   const AttachmentPreview = ({ file }: { file: Attachment }) => {
     const kind = useMemo(() => getKind(file), [file]);
     if (kind === "image") {
-      // eslint-disable-next-line @next/next/no-img-element
       return (
         <div className={styles.previewBox}>
-          <img src={file.url} alt={file.name} className={styles.previewImage} />
+          <Image
+            src={file.url}
+            alt={file.name}
+            width={1000}
+            height={1000}
+            className={styles.previewImage}
+            sizes="(max-width: 900px) 90vw, 600px"
+            style={{ width: "100%", height: "100%" }}
+            unoptimized
+          />
         </div>
       );
     }

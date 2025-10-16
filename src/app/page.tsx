@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 import EditableText from "@/components/EditableText";
 import { isAdmin } from "@/utils/auth";
@@ -176,7 +177,16 @@ export default function HomePage() {
 
         {content.image && (
           <div className={styles.imageWrapper}>
-            <img src={content.image} alt="Homepage" className={styles.image} />
+            <Image
+              src={content.image}
+              alt="Homepage"
+              width={1200}
+              height={800}
+              className={styles.image}
+              sizes="(max-width: 768px) 90vw, 600px"
+              style={{ width: "100%", height: "auto" }}
+              unoptimized
+            />
           </div>
         )}
       </div>

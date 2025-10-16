@@ -1,6 +1,7 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import Image from "next/image";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { useParams } from "next/navigation";
 import { isAdmin } from "@/utils/auth";
 import FileUploader from "@/components/FileUploader";
@@ -47,7 +48,7 @@ export default function ProjectDetailPage() {
     if (!res.ok) setProject(prev);
   };
 
-  const load = async () => {
+  const load = useCallback(async () => {
     setLoading(true);
     const res = await fetch("/api/projects", { cache: "no-store" });
     if (res.ok) {
@@ -57,11 +58,11 @@ export default function ProjectDetailPage() {
       setProject(null);
     }
     setLoading(false);
-  };
+  }, [slug]);
 
   useEffect(() => {
-    load();
-  }, [slug]);
+    void load();
+  }, [load]);
 
   const handleClickChangeImage = () => fileInputRef.current?.click();
 
@@ -143,7 +144,16 @@ export default function ProjectDetailPage() {
       />
 
       {project.image && (
-        <img src={project.image} alt={project.title} className={styles.image} />
+        <Image
+          src={project.image}
+          alt={project.title}
+          width={800}
+          height={600}
+          className={styles.image}
+          sizes="(max-width: 768px) 90vw, 600px"
+          style={{ width: "100%", height: "auto" }}
+          unoptimized
+        />
       )}
 
       {admin && (

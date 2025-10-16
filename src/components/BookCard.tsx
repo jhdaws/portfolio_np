@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import styles from "@/styles/components/ProjectCard.module.css";
 import { isAdmin } from "@/utils/auth";
@@ -32,7 +33,16 @@ export default function BookCard({ book, onDelete }: Props) {
     <div className={styles.card}>
       <Link href={`/bookshelf/${book.slug}`} className={styles.link}>
         {book.image && (
-          <img src={book.image} alt={book.title} className={styles.image} />
+          <Image
+            src={book.image}
+            alt={book.title}
+            width={600}
+            height={400}
+            className={styles.image}
+            sizes="(max-width: 600px) 100vw, 600px"
+            style={{ width: "100%", height: "200px" }}
+            unoptimized
+          />
         )}
         <h3>{book.title}</h3>
         <p>

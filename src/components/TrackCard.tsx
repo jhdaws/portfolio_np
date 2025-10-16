@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import styles from "@/styles/components/ProjectCard.module.css";
 import { isAdmin } from "@/utils/auth";
@@ -32,10 +33,15 @@ export default function TrackCard({ track, onDelete }: Props) {
     <div className={styles.card}>
       <Link href={`/music/${track.slug}`} className={styles.link}>
         {track.image && (
-          <img
+          <Image
             src={track.image}
             alt={track.title}
+            width={600}
+            height={400}
             className={styles.image}
+            sizes="(max-width: 600px) 100vw, 600px"
+            style={{ width: "100%", height: "200px" }}
+            unoptimized
           />
         )}
         <h3>{track.title}</h3>
