@@ -3,7 +3,7 @@ export const metadata = {
 };
 
 import styles from "@/styles/pages/Contact.module.css";
-import { Mail, Linkedin, Instagram } from "lucide-react"; // icon set
+import { Mail, Linkedin, Instagram, Globe } from "lucide-react";
 
 export default function ContactPage() {
   const contacts = [
@@ -22,8 +22,14 @@ export default function ContactPage() {
     {
       label: "Instagram",
       icon: Instagram,
-      href: "https://www.instagram.com/yourusername/",
-      display: "@yourusername",
+      href: "https://www.instagram.com/iamnikhilpatel/",
+      display: "@iamnikhilpatel",
+    },
+    {
+      label: "Depop",
+      icon: Globe,
+      href: "https://www.depop.com/patelnk15/",
+      display: "depop.com/patelnk15/",
     },
   ];
 

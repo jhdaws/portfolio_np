@@ -5,7 +5,7 @@ import layoutStyles from "@/styles/layout.module.css";
 import { Oswald, Roboto } from "next/font/google";
 
 export const metadata = {
-  title: "NKP Portfolio",
+  title: "Nikhil Patel",
   description: "Nikhil Patel's personal portfolio site",
 };
 
