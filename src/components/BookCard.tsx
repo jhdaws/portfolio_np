@@ -33,22 +33,22 @@ export default function BookCard({ book, onDelete }: Props) {
     <div className={styles.card}>
       <Link href={`/bookshelf/${book.slug}`} className={styles.link}>
         {book.image && (
-          <Image
-            src={book.image}
-            alt={book.title}
-            width={600}
-            height={400}
-            className={styles.image}
-            sizes="(max-width: 600px) 100vw, 600px"
-            style={{ width: "100%", height: "200px" }}
-            unoptimized
-          />
+          <div className={styles.media}>
+            <Image
+              src={book.image}
+              alt={book.title}
+              fill
+              className={styles.image}
+              sizes="(max-width: 768px) 90vw, 420px"
+              unoptimized
+            />
+          </div>
         )}
-        <h3>{book.title}</h3>
-        <p>
-          <em>{book.author}</em>
-        </p>
-        <p>{book.description}</p>
+        <div className={styles.meta}>
+          <h3 className={styles.title}>{book.title}</h3>
+          <p className={styles.subtitle}>{book.author}</p>
+          <p className={styles.description}>{book.description}</p>
+        </div>
       </Link>
       {admin && (
         <div className={styles.buttonRow}>

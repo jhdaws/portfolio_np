@@ -1,14 +1,95 @@
 .container {
-  padding: 2rem;
+  width: 100%;
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 3rem 1.5rem 4rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2.75rem;
 }
 
 .title {
+  font-size: 3rem;
+  font-weight: 600;
   text-align: center;
-  margin-bottom: 2rem;
+  margin: 0;
+  letter-spacing: 0.02em;
+  position: relative;
+}
+
+.title::after {
+  content: "";
+  display: block;
+  width: 80px;
+  height: 3px;
+  margin: 1.35rem auto 0;
+  background: var(--accent-color);
+  border-radius: 999px;
+  opacity: 0.85;
+}
+
+.actions {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
+
+.primaryButton {
+  padding: 0.75rem 1.8rem;
+  border-radius: 999px;
+  border: 1px solid rgba(129, 161, 193, 0.45);
+  background: linear-gradient(
+      135deg,
+      rgba(129, 161, 193, 0.3),
+      rgba(129, 161, 193, 0.08)
+    )
+    border-box;
+  color: var(--text-color);
+  font-size: 1rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  cursor: pointer;
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.32);
+  transition: transform 0.2s ease, box-shadow 0.3s ease,
+    border-color 0.3s ease, background 0.3s ease;
+}
+
+.primaryButton:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 16px 36px rgba(0, 0, 0, 0.38);
+  border-color: rgba(129, 161, 193, 0.7);
+  background: linear-gradient(
+      135deg,
+      rgba(129, 161, 193, 0.45),
+      rgba(129, 161, 193, 0.12)
+    )
+    border-box;
+}
+
+.primaryButton:focus-visible {
+  outline: 2px solid var(--accent-color);
+  outline-offset: 2px;
 }
 
 .grid {
+  width: 100%;
   display: grid;
   gap: 2rem;
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+}
+
+@media (max-width: 768px) {
+  .container {
+    padding: 2.5rem 1rem 3rem;
+    gap: 2.25rem;
+  }
+
+  .title {
+    font-size: 2.4rem;
+  }
+
+  .grid {
+    gap: 1.5rem;
+  }
 }

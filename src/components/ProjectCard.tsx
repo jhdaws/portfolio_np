@@ -39,19 +39,21 @@ export default function ProjectCard({ project, onDelete }: Props) {
     <div className={styles.card}>
       <Link href={`/projects/${project.slug}`} className={styles.link}>
         {project.image && (
-          <Image
-            src={project.image}
-            alt={project.title}
-            width={600}
-            height={400}
-            className={styles.image}
-            sizes="(max-width: 600px) 100vw, 600px"
-            style={{ width: "100%", height: "200px" }}
-            unoptimized
-          />
+          <div className={styles.media}>
+            <Image
+              src={project.image}
+              alt={project.title}
+              fill
+              className={styles.image}
+              sizes="(max-width: 768px) 90vw, 420px"
+              unoptimized
+            />
+          </div>
         )}
-        <h3>{project.title}</h3>
-        <p>{project.description}</p>
+        <div className={styles.meta}>
+          <h3 className={styles.title}>{project.title}</h3>
+          <p className={styles.description}>{project.description}</p>
+        </div>
       </Link>
       {admin && (
         <div className={styles.buttonRow}>

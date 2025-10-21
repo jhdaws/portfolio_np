@@ -40,7 +40,14 @@ export default function ProjectsClient() {
       <h1 className={styles.title}>Projects</h1>
       {admin && (
         <>
-          <button onClick={() => setShowModal(true)}>Add New Project</button>
+          <div className={styles.actions}>
+            <button
+              className={styles.primaryButton}
+              onClick={() => setShowModal(true)}
+            >
+              Add New Project
+            </button>
+          </div>
           {showModal && (
             <NewProjectModal
               onClose={handleCloseModal}

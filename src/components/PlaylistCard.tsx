@@ -28,21 +28,28 @@ export default function PlaylistCard({ playlist, onDelete }: Props) {
 
   return (
     <div className={styles.card}>
-      <a href={playlist.url} target="_blank" rel="noopener noreferrer" className={styles.link}>
+      <a
+        href={playlist.url}
+        target="_blank"
+        rel="noopener noreferrer"
+        className={styles.link}
+      >
         {playlist.image && (
-          <Image
-            src={playlist.image}
-            alt={playlist.title}
-            width={600}
-            height={400}
-            className={styles.image}
-            sizes="(max-width: 600px) 100vw, 600px"
-            style={{ width: "100%", height: "200px" }}
-            unoptimized
-          />
+          <div className={styles.media}>
+            <Image
+              src={playlist.image}
+              alt={playlist.title}
+              fill
+              className={styles.image}
+              sizes="(max-width: 768px) 90vw, 420px"
+              unoptimized
+            />
+          </div>
         )}
-        <h3>{playlist.title}</h3>
-        <p>{playlist.description}</p>
+        <div className={styles.meta}>
+          <h3 className={styles.title}>{playlist.title}</h3>
+          <p className={styles.description}>{playlist.description}</p>
+        </div>
       </a>
       {admin && (
         <div className={styles.buttonRow}>

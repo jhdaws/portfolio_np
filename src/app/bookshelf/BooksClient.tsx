@@ -40,7 +40,14 @@ export default function BooksClient() {
       <h1 className={styles.title}>Bookshelf</h1>
       {admin && (
         <>
-          <button onClick={() => setShowModal(true)}>Add New Book</button>
+          <div className={styles.actions}>
+            <button
+              className={styles.primaryButton}
+              onClick={() => setShowModal(true)}
+            >
+              Add New Book
+            </button>
+          </div>
           {showModal && (
             <NewBookModal onClose={handleCloseModal} onAdd={handleAddBook} />
           )}

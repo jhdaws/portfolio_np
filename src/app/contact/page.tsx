@@ -41,19 +41,19 @@ export default function ContactPage() {
       </p>
       <ul className={styles.list}>
         {contacts.map(({ label, icon: Icon, href, display }) => (
-          <li key={label} className={styles.item}>
-            <Icon className={styles.icon} size={28} />
-            <div className={styles.info}>
-              <span className={styles.label}>{label}</span>
-              <a
-                href={href}
-                target="_blank"
-                rel="noopener noreferrer"
-                className={styles.link}
-              >
-                {display}
-              </a>
-            </div>
+          <li key={label} className={styles.listItem}>
+            <a
+              href={href}
+              target="_blank"
+              rel="noopener noreferrer"
+              className={styles.item}
+            >
+              <Icon className={styles.icon} size={30} />
+              <div className={styles.info}>
+                <span className={styles.label}>{label}</span>
+                <span className={styles.value}>{display}</span>
+              </div>
+            </a>
           </li>
         ))}
       </ul>

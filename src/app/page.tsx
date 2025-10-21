@@ -184,7 +184,6 @@ export default function HomePage() {
               height={800}
               className={styles.image}
               sizes="(max-width: 768px) 90vw, 600px"
-              style={{ width: "100%", height: "auto" }}
               unoptimized
             />
           </div>
@@ -209,7 +208,7 @@ export default function HomePage() {
       <div className={styles.contact}>
         <Link href="/contact" className={styles.contactButton}>
           <FaEnvelope size={40} />
-          Contact
+          <span>Contact</span>
         </Link>
       </div>
     </div>

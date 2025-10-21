@@ -33,22 +33,22 @@ export default function TrackCard({ track, onDelete }: Props) {
     <div className={styles.card}>
       <Link href={`/music/${track.slug}`} className={styles.link}>
         {track.image && (
-          <Image
-            src={track.image}
-            alt={track.title}
-            width={600}
-            height={400}
-            className={styles.image}
-            sizes="(max-width: 600px) 100vw, 600px"
-            style={{ width: "100%", height: "200px" }}
-            unoptimized
-          />
+          <div className={styles.media}>
+            <Image
+              src={track.image}
+              alt={track.title}
+              fill
+              className={styles.image}
+              sizes="(max-width: 768px) 90vw, 420px"
+              unoptimized
+            />
+          </div>
         )}
-        <h3>{track.title}</h3>
-        <p>
-          <em>{track.artist}</em>
-        </p>
-        <p>{track.description}</p>
+        <div className={styles.meta}>
+          <h3 className={styles.title}>{track.title}</h3>
+          <p className={styles.subtitle}>{track.artist}</p>
+          <p className={styles.description}>{track.description}</p>
+        </div>
       </Link>
       {admin && (
         <div className={styles.buttonRow}>

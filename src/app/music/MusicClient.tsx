@@ -48,12 +48,19 @@ export default function MusicClient() {
       <h1 className={pageStyles.title}>Music</h1>
 
       <section className={sectionStyles.section}>
-        <h2>Playlists</h2>
+        <div className={sectionStyles.heading}>
+          <h2>Playlists</h2>
+        </div>
         {admin && (
           <>
-            <button onClick={() => setShowPlaylistModal(true)}>
-              Add Playlist
-            </button>
+            <div className={pageStyles.actions}>
+              <button
+                className={pageStyles.primaryButton}
+                onClick={() => setShowPlaylistModal(true)}
+              >
+                Add Playlist
+              </button>
+            </div>
             {showPlaylistModal && (
               <NewPlaylistModal
                 onClose={() => setShowPlaylistModal(false)}
@@ -76,10 +83,19 @@ export default function MusicClient() {
       <section
         className={clsx(sectionStyles.section, sectionStyles.spaced)}
       >
-        <h2>Albums & Songs</h2>
+        <div className={sectionStyles.heading}>
+          <h2>Albums & Songs</h2>
+        </div>
         {admin && (
           <>
-            <button onClick={() => setShowTrackModal(true)}>Add Track</button>
+            <div className={pageStyles.actions}>
+              <button
+                className={pageStyles.primaryButton}
+                onClick={() => setShowTrackModal(true)}
+              >
+                Add Track
+              </button>
+            </div>
             {showTrackModal && (
               <NewTrackModal
                 onClose={() => setShowTrackModal(false)}
