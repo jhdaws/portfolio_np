@@ -1,10 +1,12 @@
 "use client";
 
-import Image from "next/image";
+/* eslint-disable @next/next/no-img-element */
+
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useParams } from "next/navigation";
 import { isAdmin } from "@/utils/auth";
 import FileUploader from "@/components/FileUploader";
+import TextAttachmentForm from "@/components/TextAttachmentForm";
 import AttachmentRenderer from "@/components/AttachmentRenderer";
 import type { ProjectData } from "@/utils/projectData";
 import styles from "@/styles/pages/DetailPage.module.css";
@@ -134,69 +136,86 @@ export default function ProjectDetailPage() {
   if (loading) return <p>Loading...</p>;
   if (!project) return <p>Project not found.</p>;
 
+  const hasAttachments = (project.attachments?.length ?? 0) > 0;
+
   return (
-    <div>
-      <EditableText
-        text={project.title}
-        onSave={saveTitle}
-        isAdmin={admin}
-        tag="h1"
-      />
-
-      {project.image && (
-        <Image
-          src={project.image}
-          alt={project.title}
-          width={800}
-          height={600}
-          className={styles.image}
-          sizes="(max-width: 768px) 90vw, 600px"
-          style={{ width: "100%", height: "auto" }}
-          unoptimized
+    <div className={styles.page}>
+      <section className={styles.header}>
+        <EditableText
+          text={project.title}
+          onSave={saveTitle}
+          isAdmin={admin}
+          tag="h1"
         />
-      )}
 
-      {admin && (
-        <div className={styles.adminImageControls}>
-          <input
-            ref={fileInputRef}
-            type="file"
-            accept="image/*"
-            className={styles.fileInput}
-            onChange={handleFileSelected}
-          />
-          <button onClick={handleClickChangeImage} disabled={imgBusy}>
-            {project.image ? "Change Image" : "Add Image"}
-          </button>
-          {project.image && (
-            <button onClick={handleRemoveImage} disabled={imgBusy}>
-              Remove Image
+        {project.image && (
+          <div className={styles.imageWrap}>
+            <img
+              src={project.image}
+              alt={project.title}
+              className={styles.image}
+              loading="lazy"
+              decoding="async"
+            />
+          </div>
+        )}
+
+        {admin && (
+          <div className={styles.controls}>
+            <input
+              ref={fileInputRef}
+              type="file"
+              accept="image/*"
+              className={styles.fileInput}
+              onChange={handleFileSelected}
+            />
+            <button onClick={handleClickChangeImage} disabled={imgBusy}>
+              {project.image ? "Change Image" : "Add Image"}
             </button>
-          )}
-          {imgBusy && <span className={styles.saving}>Saving…</span>}
-        </div>
-      )}
+            {project.image && (
+              <button onClick={handleRemoveImage} disabled={imgBusy}>
+                Remove Image
+              </button>
+            )}
+            {imgBusy && <span className={styles.saving}>Saving…</span>}
+          </div>
+        )}
+      </section>
 
-      <EditableText
-        text={project.description}
-        onSave={saveDescription}
-        isAdmin={admin}
-        tag="p"
-      />
+      <section className={styles.description}>
+        <EditableText
+          text={project.description}
+          onSave={saveDescription}
+          isAdmin={admin}
+          tag="p"
+        />
+      </section>
 
-      <hr className={styles.divider} />
+      {hasAttachments && <hr className={styles.divider} />}
 
       <AttachmentRenderer
         attachments={project.attachments || []}
         projectSlug={project.slug}
         onChange={load}
+        className={styles.attachments}
       />
 
       {admin ? (
-        <div>
-          <h2>Admin Attachments</h2>
-          <FileUploader projectSlug={project.slug} onChange={load} />
-        </div>
+        <>
+          <hr className={styles.divider} />
+          <section className={styles.adminTools}>
+            <p className={styles.adminTitle}>Admin</p>
+            <p className={styles.adminHint}>
+              Upload supplemental assets or add longer-form text entries.
+            </p>
+            <FileUploader projectSlug={project.slug} onChange={load} />
+            <TextAttachmentForm
+              projectSlug={project.slug}
+              onChange={load}
+              type="projects"
+            />
+          </section>
+        </>
       ) : null}
     </div>
   );

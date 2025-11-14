@@ -1,10 +1,12 @@
 "use client";
 
-import Image from "next/image";
+/* eslint-disable @next/next/no-img-element */
+
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useParams } from "next/navigation";
 import { isAdmin } from "@/utils/auth";
 import FileUploader from "@/components/FileUploader";
+import TextAttachmentForm from "@/components/TextAttachmentForm";
 import AttachmentRenderer from "@/components/AttachmentRenderer";
 import type { BookData } from "@/utils/bookData";
 import styles from "@/styles/pages/DetailPage.module.css";
@@ -168,109 +170,122 @@ export default function BookDetailPage() {
   if (loading) return <p>Loading...</p>;
   if (!book) return <p>Book not found.</p>;
 
+  const hasAttachments = (book.attachments?.length ?? 0) > 0;
+
   return (
-    <div>
-      <EditableText
-        text={book.title}
-        onSave={saveTitle}
-        isAdmin={admin}
-        tag="h1"
-      />
-      <p>
-        <strong>
-          <EditableText
-            text={book.author}
-            onSave={saveAuthor}
-            isAdmin={admin}
-            tag="span"
-          />
-        </strong>
-        {" "}
-        {book.year !== undefined && (
-          <EditableText
-            text={book.year.toString()}
-            onSave={saveYear}
-            isAdmin={admin}
-            tag="span"
-          />
-        )}
-      </p>
-      {book.genre !== undefined && (
-        <p>
-          Genre:{" "}
-          <EditableText
-            text={book.genre}
-            onSave={saveGenre}
-            isAdmin={admin}
-            tag="span"
-          />
-        </p>
-      )}
-
-      {book.image && (
-        <Image
-          src={book.image}
-          alt={book.title}
-          width={800}
-          height={600}
-          className={styles.image}
-          sizes="(max-width: 768px) 90vw, 600px"
-          style={{ width: "100%", height: "auto" }}
-          unoptimized
+    <div className={styles.page}>
+      <section className={styles.header}>
+        <EditableText
+          text={book.title}
+          onSave={saveTitle}
+          isAdmin={admin}
+          tag="h1"
         />
-      )}
-
-      {admin && (
-        <div className={styles.adminImageControls}>
-          <input
-            ref={fileInputRef}
-            type="file"
-            accept="image/*"
-            className={styles.fileInput}
-            onChange={handleFileSelected}
-          />
-          <button onClick={handleClickChangeImage} disabled={imgBusy}>
-            {book.image ? "Change Image" : "Add Image"}
-          </button>
-          {book.image && (
-            <button onClick={handleRemoveImage} disabled={imgBusy}>
-              Remove Image
-            </button>
+        <div className={styles.meta}>
+          <span>
+            <EditableText
+              text={book.author}
+              onSave={saveAuthor}
+              isAdmin={admin}
+              tag="span"
+            />
+          </span>
+          {book.year !== undefined && (
+            <span>
+              <EditableText
+                text={book.year.toString()}
+                onSave={saveYear}
+                isAdmin={admin}
+                tag="span"
+              />
+            </span>
           )}
-          {imgBusy && <span className={styles.saving}>Saving…</span>}
+          {book.genre !== undefined && (
+            <span>
+              <EditableText
+                text={book.genre}
+                onSave={saveGenre}
+                isAdmin={admin}
+                tag="span"
+              />
+            </span>
+          )}
         </div>
-      )}
 
-      <EditableText
-        text={book.description}
-        onSave={saveDescription}
-        isAdmin={admin}
-        tag="p"
-      />
+        {book.image && (
+          <div className={styles.imageWrap}>
+            <img
+              src={book.image}
+              alt={book.title}
+              className={styles.image}
+              loading="lazy"
+              decoding="async"
+            />
+          </div>
+        )}
 
-      <hr className={styles.divider} />
+        {admin && (
+          <div className={styles.controls}>
+            <input
+              ref={fileInputRef}
+              type="file"
+              accept="image/*"
+              className={styles.fileInput}
+              onChange={handleFileSelected}
+            />
+            <button onClick={handleClickChangeImage} disabled={imgBusy}>
+              {book.image ? "Change Image" : "Add Image"}
+            </button>
+            {book.image && (
+              <button onClick={handleRemoveImage} disabled={imgBusy}>
+                Remove Image
+              </button>
+            )}
+            {imgBusy && <span className={styles.saving}>Saving…</span>}
+          </div>
+        )}
+      </section>
+
+      <section className={styles.description}>
+        <EditableText
+          text={book.description}
+          onSave={saveDescription}
+          isAdmin={admin}
+          tag="p"
+        />
+      </section>
+
+      {hasAttachments && <hr className={styles.divider} />}
 
       <AttachmentRenderer
         attachments={book.attachments || []}
         projectSlug={book.slug}
         onChange={load}
         type="books"
+        className={styles.attachments}
       />
 
       {admin ? (
-        <div>
-          <h2>Admin Attachments</h2>
-          <FileUploader
-            projectSlug={book.slug}
-            onChange={load}
-            type="books"
-          />
-        </div>
-      ) : (
-        <p>
-          <em>Attachments coming soon.</em>
-        </p>
-      )}
+        <>
+          <hr className={styles.divider} />
+          <section className={styles.adminTools}>
+            <p className={styles.adminTitle}>Admin</p>
+            <p className={styles.adminHint}>
+              Add references, excerpts, or longer reflections for this book.
+            </p>
+            <FileUploader
+              projectSlug={book.slug}
+              onChange={load}
+              type="books"
+            />
+            <TextAttachmentForm
+              projectSlug={book.slug}
+              onChange={load}
+              type="books"
+            />
+          </section>
+        </>
+      ) : null}
     </div>
   );
 }

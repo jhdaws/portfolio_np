@@ -1,10 +1,12 @@
 "use client";
 
-import Image from "next/image";
+/* eslint-disable @next/next/no-img-element */
+
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useParams } from "next/navigation";
 import { isAdmin } from "@/utils/auth";
 import FileUploader from "@/components/FileUploader";
+import TextAttachmentForm from "@/components/TextAttachmentForm";
 import AttachmentRenderer from "@/components/AttachmentRenderer";
 import type { TrackData } from "@/utils/trackData";
 import styles from "@/styles/pages/DetailPage.module.css";
@@ -143,85 +145,98 @@ export default function TrackDetailPage() {
   if (loading) return <p>Loading...</p>;
   if (!track) return <p>Track not found.</p>;
 
+  const hasAttachments = (track.attachments?.length ?? 0) > 0;
+
   return (
-    <div>
-      <EditableText
-        text={track.title}
-        onSave={saveTitle}
-        isAdmin={admin}
-        tag="h1"
-      />
-      <p>
-        <strong>
-          <EditableText
-            text={track.artist}
-            onSave={saveArtist}
-            isAdmin={admin}
-            tag="span"
-          />
-        </strong>
-      </p>
-
-      {track.image && (
-        <Image
-          src={track.image}
-          alt={track.title}
-          width={800}
-          height={600}
-          className={styles.image}
-          sizes="(max-width: 768px) 90vw, 600px"
-          style={{ width: "100%", height: "auto" }}
-          unoptimized
+    <div className={styles.page}>
+      <section className={styles.header}>
+        <EditableText
+          text={track.title}
+          onSave={saveTitle}
+          isAdmin={admin}
+          tag="h1"
         />
-      )}
-
-      {admin && (
-        <div className={styles.adminImageControls}>
-          <input
-            ref={fileInputRef}
-            type="file"
-            accept="image/*"
-            className={styles.fileInput}
-            onChange={handleFileSelected}
-          />
-          <button onClick={handleClickChangeImage} disabled={imgBusy}>
-            {track.image ? "Change Image" : "Add Image"}
-          </button>
-          {track.image && (
-            <button onClick={handleRemoveImage} disabled={imgBusy}>
-              Remove Image
-            </button>
-          )}
-          {imgBusy && <span className={styles.saving}>Saving…</span>}
+        <div className={styles.meta}>
+          <span>
+            <EditableText
+              text={track.artist}
+              onSave={saveArtist}
+              isAdmin={admin}
+              tag="span"
+            />
+          </span>
         </div>
-      )}
 
-      <EditableText
-        text={track.description}
-        onSave={saveDescription}
-        isAdmin={admin}
-        tag="p"
-      />
+        {track.image && (
+          <div className={styles.imageWrap}>
+            <img
+              src={track.image}
+              alt={track.title}
+              className={styles.image}
+              loading="lazy"
+              decoding="async"
+            />
+          </div>
+        )}
 
-      <hr className={styles.divider} />
+        {admin && (
+          <div className={styles.controls}>
+            <input
+              ref={fileInputRef}
+              type="file"
+              accept="image/*"
+              className={styles.fileInput}
+              onChange={handleFileSelected}
+            />
+            <button onClick={handleClickChangeImage} disabled={imgBusy}>
+              {track.image ? "Change Image" : "Add Image"}
+            </button>
+            {track.image && (
+              <button onClick={handleRemoveImage} disabled={imgBusy}>
+                Remove Image
+              </button>
+            )}
+            {imgBusy && <span className={styles.saving}>Saving…</span>}
+          </div>
+        )}
+      </section>
+
+      <section className={styles.description}>
+        <EditableText
+          text={track.description}
+          onSave={saveDescription}
+          isAdmin={admin}
+          tag="p"
+        />
+      </section>
+
+      {hasAttachments && <hr className={styles.divider} />}
 
       <AttachmentRenderer
         attachments={track.attachments || []}
         projectSlug={track.slug}
         onChange={load}
         type="tracks"
+        className={styles.attachments}
       />
 
       {admin ? (
-        <div>
-          <h2>Admin Attachments</h2>
-          <FileUploader projectSlug={track.slug} onChange={load} type="tracks" />
-        </div>
-      ) : (
-        <p>
-          <em>Attachments coming soon.</em>
-        </p>
-      )}
+        <>
+          <hr className={styles.divider} />
+          <section className={styles.adminTools}>
+            <p className={styles.adminTitle}>Admin</p>
+            <p className={styles.adminHint}>
+              Drop in lyric sheets, artwork, or additional background notes.
+            </p>
+            <FileUploader projectSlug={track.slug} onChange={load} type="tracks" />
+            <TextAttachmentForm
+              projectSlug={track.slug}
+              onChange={load}
+              type="tracks"
+            />
+          </section>
+        </>
+      ) : null}
     </div>
   );
 }

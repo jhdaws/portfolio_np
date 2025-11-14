@@ -3,10 +3,13 @@ import { readJson, writeJson } from "@/utils/kvJson";
 const KV_KEY = "data/projects.json";
 
 export type Attachment = {
+  id?: string;
+  type?: "file" | "note";
   name: string;
-  url: string;
-  contentType: string;
-  pathname: string;
+  url?: string;
+  contentType?: string;
+  pathname?: string;
+  body?: string;
 };
 
 export type ProjectData = {

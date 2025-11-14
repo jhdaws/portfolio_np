@@ -1,72 +1,83 @@
 import { NextRequest, NextResponse } from "next/server";
 import { readJson, writeJson } from "@/utils/kvJson";
-import { del } from "@vercel/blob";
 import type { Attachment } from "@/utils/projectData";
 import type { TrackData } from "@/utils/trackData";
 
-export const runtime = "nodejs";
 const KV_KEY = "data/tracks.json";
 
+type Payload = {
+  projectSlug: string;
+  attachmentId?: string;
+  pathname?: string;
+  index?: number;
+  data: Partial<Attachment>;
+};
+
 export async function POST(req: NextRequest) {
-  const {
-    projectSlug,
-    pathname,
-    attachmentId,
-  }: { projectSlug: string; pathname?: string; attachmentId?: string } =
+  const { projectSlug, attachmentId, pathname, index, data }: Payload =
     await req.json();
 
-  if (!projectSlug || (!pathname && !attachmentId)) {
+  if (!projectSlug || !data || typeof data !== "object") {
     return NextResponse.json(
-      { error: "Missing attachment reference" },
+      { error: "Missing projectSlug or data" },
       { status: 400 }
     );
   }
 
   try {
     const tracks = await readJson<TrackData[]>(KV_KEY, []);
-
     const track = tracks.find((p) => p.slug === projectSlug);
-    if (!track) {
+
+    if (!track || !track.attachments) {
       return NextResponse.json({ error: "Track not found" }, { status: 404 });
     }
 
-    const attachments = track.attachments || [];
+    const attachments = track.attachments;
     const match = (file: Attachment) => {
       if (attachmentId) {
         if (file.id && file.id === attachmentId) return true;
         if (!file.id && file.pathname && file.pathname === attachmentId)
           return true;
       }
-      if (pathname && file.pathname) return file.pathname === pathname;
+      if (pathname && file.pathname && file.pathname === pathname) return true;
       return false;
     };
 
-    const index = attachments.findIndex(match);
+    let targetIndex = attachments.findIndex(match);
 
-    if (index === -1) {
+    if (
+      targetIndex < 0 &&
+      typeof index === "number" &&
+      index >= 0 &&
+      index < attachments.length
+    ) {
+      targetIndex = index;
+    }
+
+    if (targetIndex < 0) {
       return NextResponse.json(
         { error: "Attachment not found on track" },
         { status: 404 }
       );
     }
 
-    const [removed] = attachments.splice(index, 1);
-    track.attachments = attachments;
+    const existing = attachments[targetIndex];
+    attachments[targetIndex] = {
+      ...existing,
+      ...data,
+      id: existing.id ?? data.id,
+    };
 
-    // Persist update first
     await writeJson(KV_KEY, tracks);
 
-    if (removed?.pathname) {
-      await del(removed.pathname, {
-        token: process.env.BLOB_READ_WRITE_TOKEN,
-      });
-    }
-
-    return NextResponse.json({ success: true });
+    return NextResponse.json({
+      success: true,
+      attachment: attachments[targetIndex],
+    });
   } catch (err) {
-    console.error("Delete attachment error:", err);
+    console.error("Update attachment error:", err);
     return NextResponse.json(
-      { error: "Failed to delete attachment" },
+      { error: "Failed to update attachment" },
       { status: 500 }
     );
   }

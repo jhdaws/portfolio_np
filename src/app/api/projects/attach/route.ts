@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { randomUUID } from "crypto";
 import { readJson, writeJson } from "@/utils/kvJson";
 import type { Attachment, ProjectData } from "@/utils/projectData";
 
@@ -16,7 +17,14 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "Project not found" }, { status: 404 });
 
     if (!project.attachments) project.attachments = [];
-    project.attachments.push(file);
+
+    const attachment: Attachment = {
+      ...file,
+      id: file.id ?? randomUUID(),
+      type: file.type ?? (file.body ? "note" : "file"),
+    };
+
+    project.attachments.push(attachment);
 
     await writeJson(KV_KEY, projects);
 

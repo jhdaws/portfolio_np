@@ -53,7 +53,13 @@ export default function FileUploader({
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
             projectSlug,
-            file: { url, contentType, name: file.name, pathname },
+            file: {
+              type: "file",
+              url,
+              contentType,
+              name: file.name,
+              pathname,
+            },
           }),
         });
       }
