@@ -1,78 +1,16 @@
-/* Visually-hidden utility for the <span class="sr-only"> */
-.sr-only {
-  position: absolute !important;
-  width: 1px !important;
-  height: 1px !important;
-  padding: 0 !important;
-  margin: -1px !important;
-  overflow: hidden !important;
-  clip: rect(0, 0, 1px, 1px) !important;
-  white-space: nowrap !important;
-  border: 0 !important;
-}
-
 .button {
-  --btn-primary: rgba(129, 161, 193, 0.32);
-  --btn-secondary: rgba(129, 161, 193, 0.12);
-
-  position: relative;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 48px;
-  height: 48px;
-  padding: 0;
-  border-radius: 999px;
-  border: 1px solid rgba(129, 161, 193, 0.35);
-  background: linear-gradient(140deg, var(--btn-primary), var(--btn-secondary))
-    border-box;
+  background: transparent;
+  border: none;
   color: var(--text-color);
-  box-shadow: 0 10px 26px rgba(0, 0, 0, 0.32);
-  cursor: pointer;
-  transition: transform 0.2s ease, box-shadow 0.25s ease,
-    border-color 0.25s ease, background 0.25s ease, color 0.25s ease;
+  font-family: var(--font-heading);
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  font-size: 0.85rem;
+  padding: 0.15rem 0;
+  border-bottom: 1px solid transparent;
+  transition: border-color 0.2s ease;
 }
 
 .button:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 14px 32px rgba(0, 0, 0, 0.38);
-  border-color: rgba(129, 161, 193, 0.65);
-  background: linear-gradient(
-      140deg,
-      color-mix(in srgb, var(--btn-primary) 70%, white 30%),
-      color-mix(in srgb, var(--btn-secondary) 70%, white 30%)
-    )
-    border-box;
-  color: var(--accent-color);
-}
-
-.button:active {
-  transform: translateY(-1px);
-}
-
-.button:focus-visible {
-  outline: 2px solid var(--accent-color);
-  outline-offset: 3px;
-}
-
-.login {
-  --btn-primary: rgba(129, 161, 193, 0.36);
-  --btn-secondary: rgba(129, 161, 193, 0.14);
-}
-
-.logout {
-  --btn-primary: rgba(235, 143, 143, 0.38);
-  --btn-secondary: rgba(235, 143, 143, 0.18);
-}
-
-.icon {
-  width: 22px;
-  height: 22px;
-  display: inline-block;
-  stroke: currentColor;
-  fill: none;
-  stroke-width: 2;
-  stroke-linecap: round;
-  stroke-linejoin: round;
-  flex-shrink: 0;
+  border-color: var(--text-color);
 }

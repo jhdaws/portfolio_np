@@ -19,7 +19,7 @@
   flex-direction: column;
   gap: 0.85rem;
   padding-bottom: 1.5rem;
-  border-bottom: 1px solid rgba(129, 161, 193, 0.2);
+  border-bottom: 1px solid var(--line-color);
 }
 
 .previewBox {
@@ -30,7 +30,9 @@
 .previewVideo,
 .previewFrame {
   width: 100%;
-  border-radius: 16px;
+  border-radius: 6px;
+  border: 1px solid var(--line-color);
+  background: var(--surface-color);
 }
 
 .previewImage {
@@ -53,12 +55,12 @@
   min-height: 320px;
   height: clamp(360px, 60vh, 720px);
   border: none;
-  background: rgba(15, 20, 28, 0.6);
+  background: var(--surface-color);
 }
 
 .noteBox {
-  border-left: 3px solid rgba(129, 161, 193, 0.6);
-  padding-left: 1.1rem;
+  border-left: 2px solid var(--line-color);
+  padding-left: 1rem;
 }
 
 .noteBody {
@@ -84,14 +86,13 @@
 
 .noteInput,
 .noteTextarea {
-  border-radius: 10px;
-  border: 1px solid rgba(129, 161, 193, 0.35);
-  background: rgba(255, 255, 255, 0.04);
+  border-radius: 2px;
+  border: 1px solid var(--line-color);
+  background: var(--surface-color);
   color: var(--text-color);
   padding: 0.65rem 0.75rem;
   font-size: 1rem;
-  transition: border-color 0.2s ease, box-shadow 0.2s ease,
-    background 0.2s ease;
+  transition: border-color 0.2s ease;
 }
 
 .noteTextarea {
@@ -103,9 +104,7 @@
 .noteInput:focus,
 .noteTextarea:focus {
   outline: none;
-  border-color: rgba(129, 161, 193, 0.7);
-  box-shadow: 0 0 0 2px rgba(129, 161, 193, 0.25);
-  background: rgba(255, 255, 255, 0.06);
+  border-color: var(--text-color);
 }
 
 .info {
@@ -130,20 +129,18 @@
 .buttons button {
   padding: 0.3rem 0.75rem;
   border-radius: 999px;
-  border: 1px solid rgba(129, 161, 193, 0.35);
-  background: rgba(129, 161, 193, 0.12);
+  border: 1px solid var(--line-color);
+  background: transparent;
   color: var(--text-color);
   font-size: 0.82rem;
   letter-spacing: 0.02em;
   cursor: pointer;
-  transition: transform 0.2s ease, background 0.2s ease,
-    border-color 0.2s ease;
+  transition: border-color 0.2s ease, background 0.2s ease;
 }
 
 .buttons button:hover:not(:disabled) {
-  transform: translateY(-1px);
-  background: rgba(129, 161, 193, 0.22);
-  border-color: rgba(129, 161, 193, 0.55);
+  background: var(--surface-color);
+  border-color: var(--text-color);
 }
 
 .buttons button:disabled {

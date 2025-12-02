@@ -6,7 +6,13 @@ import EditableText from "@/components/EditableText";
 import { isAdmin } from "@/utils/auth";
 import Link from "next/link";
 import styles from "@/styles/pages/Home.module.css";
-import { FaBook, FaEnvelope, FaMusic, FaProjectDiagram } from "react-icons/fa";
+import {
+  FaBook,
+  FaEnvelope,
+  FaMusic,
+  FaProjectDiagram,
+  FaCameraRetro,
+} from "react-icons/fa";
 
 type HomeContent = {
   title: string;
@@ -202,6 +208,10 @@ export default function HomePage() {
         <Link href="/music" className={styles.navButton}>
           <FaMusic size={40} />
           <span>Music</span>
+        </Link>
+        <Link href="/gallery" className={styles.navButton}>
+          <FaCameraRetro size={36} />
+          <span>Gallery</span>
         </Link>
       </nav>
 

@@ -2,23 +2,28 @@ import "../styles/globals.css";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import layoutStyles from "@/styles/layout.module.css";
-import { Oswald, Roboto } from "next/font/google";
+import {
+  Playfair_Display,
+  Space_Mono,
+} from "next/font/google";
 
 export const metadata = {
   title: "Nikhil Patel",
   description: "Nikhil Patel's personal portfolio site",
 };
 
-const headingFont = Oswald({
+const headingFont = Playfair_Display({
   subsets: ["latin"],
   variable: "--font-heading",
-  weight: ["400", "700"],
+  weight: ["400", "500", "600", "700"],
+  display: "swap",
 });
 
-const bodyFont = Roboto({
+const bodyFont = Space_Mono({
   subsets: ["latin"],
   variable: "--font-body",
-  weight: ["400", "500"],
+  weight: ["400", "700"],
+  display: "swap",
 });
 
 export default function RootLayout({

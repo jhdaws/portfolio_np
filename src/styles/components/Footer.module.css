@@ -1,16 +1,9 @@
 .footer {
   margin-top: auto;
   width: 100%;
-  padding: 2.25rem 2rem;
-  border-top: 1px solid rgba(129, 161, 193, 0.28);
-  background: linear-gradient(
-      135deg,
-      rgba(8, 12, 18, 0.92),
-      rgba(8, 12, 18, 0.78)
-    )
-    border-box;
-  box-shadow: 0 -16px 36px rgba(0, 0, 0, 0.35);
-  backdrop-filter: blur(18px);
+  padding: 1.75rem 2rem;
+  border-top: 1px solid var(--line-color);
+  background: linear-gradient(90deg, #121214, #1f1f21);
 }
 
 .inner {
@@ -26,9 +19,9 @@
 
 .note {
   margin: 0;
-  font-size: 1rem;
-  letter-spacing: 0.01em;
-  color: rgba(255, 255, 255, 0.82);
+  font-size: 0.9rem;
+  letter-spacing: 0.08em;
+  color: var(--muted-color);
 }
 
 .links {
@@ -38,35 +31,16 @@
 }
 
 .link {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  padding: 0.55rem 1.2rem;
-  border-radius: 999px;
-  border: 1px solid rgba(129, 161, 193, 0.35);
-  background: linear-gradient(
-    135deg,
-    rgba(129, 161, 193, 0.35),
-    rgba(129, 161, 193, 0.12)
-  );
-  color: var(--text-color);
-  text-decoration: none;
-  font-weight: 600;
-  letter-spacing: 0.02em;
-  transition: transform 0.2s ease, box-shadow 0.3s ease,
-    border-color 0.3s ease, background 0.3s ease;
+  font-size: 0.9rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  border-bottom: 1px solid transparent;
+  padding-bottom: 0.1rem;
+  transition: border-color 0.2s ease;
 }
 
 .link:hover {
-  transform: translateY(-2px);
-  border-color: rgba(129, 161, 193, 0.65);
-  background: linear-gradient(
-    135deg,
-    rgba(129, 161, 193, 0.45),
-    rgba(129, 161, 193, 0.16)
-  );
-  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.32);
-  color: var(--accent-color);
+  border-color: var(--text-color);
 }
 
 @media (max-width: 768px) {
